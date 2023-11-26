@@ -9,6 +9,8 @@ I will gradually publish the results on Archimedes and others here. There will b
 
 Algorithms for calculating pi that are based on sine and cosine expressions are generally not permitted, as they assume that pi is already known. Modern software products always use RAD instead of DEG internally. I am not aware of any product that uses DEG internally.
 
+To get things right in terms of pi, you need to know whether a Taylor series is used internally for sine and cosine, for example, and what accuracy can be achieved after the decimal point. 
+
 Once SageMath is installed, interested visitors can try out the Jupyter notebooks for themselves. Prerequisite is the installation of SageMath and basic knowledge of Python.
 
 "The Works of Archimedes" [1] is available in different forms and as PDF-File. 
