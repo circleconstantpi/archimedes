@@ -10,5 +10,8 @@ I will gradually publish the results on Archimedes and others here. There will b
 Once SageMath is installed, interested visitors can try out the Jupyter notebooks for themselves. Prerequisite is the installation of SageMath and basic knowledge of Python.
 
 ## Reference
+[1]      T. L. HEATH, Sc.D., The Works of Archimedes, EDITED IN MODERN NOTATION WITH INTRODUCTORY CHAPTERS, CAMBRIDGE: AT THE UNIVERSITY PRESS, 1897
+[All Rights reserve  
+[Sage]   SageMath, the Sage Mathematics Software System (Version 10.1), The Sage Developers, 2019, https://www.sagemath.org
 
-[Sage] SageMath, the Sage Mathematics Software System (Version 10.1), The Sage Developers, 2019, https://www.sagemath.org.
+
