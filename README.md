@@ -11,7 +11,6 @@ Once SageMath is installed, interested visitors can try out the Jupyter notebook
 
 ## Reference
 [1]      T. L. HEATH, Sc.D., The Works of Archimedes, EDITED IN MODERN NOTATION WITH INTRODUCTORY CHAPTERS, CAMBRIDGE: AT THE UNIVERSITY PRESS, 1897
-[All Rights reserve  
 [Sage]   SageMath, the Sage Mathematics Software System (Version 10.1), The Sage Developers, 2019, https://www.sagemath.org
 
 
