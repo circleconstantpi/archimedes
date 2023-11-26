@@ -7,6 +7,8 @@ In a first step, I analyzed his work, drew my conclusions from it and then devel
 
 I will gradually publish the results on Archimedes and others here. There will be well-known and less well-known things. Later, I will present my more modern findings on Pi here and make them available to the interested public.
 
+Algorithms for calculating pi that are based on sine and cosine expressions are generally not permitted, as they assume that pi is already known. Modern software products always use RAD instead of DEG internally. I am not aware of any product that uses DEG internally.
+
 Once SageMath is installed, interested visitors can try out the Jupyter notebooks for themselves. Prerequisite is the installation of SageMath and basic knowledge of Python.
 
 "The Works of Archimedes" [1] is available in different forms and as PDF-File. 
