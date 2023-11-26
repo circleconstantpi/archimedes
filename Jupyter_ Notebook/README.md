@@ -1,1 +1,1 @@
-I am working on a book about Archimedes' constant pi. I use SageMath for the necessary geometric constructions and mathematical calculations. 
+I am working on a book about the Archimedes' constant pi. For the necessary geometric constructions and mathematical calculations I am using SageMath. I am gradually saving here what I have developed as a jupyter notebook for this matter.  
