@@ -1,1 +1,0 @@
-For years, I didn't use symbolic math. SageMath is therefore new to me, although I have wanted to try SageMath for a very long time.  Working with the equations of Archimedes is now a good opportunity and introduction to see what is possible in SageMath and what is not.
