@@ -31,7 +31,7 @@ __version__ = "0.1"
 import math
 
 # Define the function for the iterative calculation of Pi.
-def archimedes_inner_polygon_method2(OB, OE, BE, iteration=5):
+def archimedes_inner_polygon_method1(OB, OE, BE, iteration=5):
     '''First modified Archimedes algorithm for calculating the perimeter
     of the inner regular polygon.'''
     # Initialise the value of OA for the first iteration step.
@@ -66,5 +66,5 @@ BE = 1/2
 
 # Run a simple test.
 iteration = 5
-Pi = archimedes_inner_polygon_method2(OB, OE, BE, iteration=iteration)
+Pi = archimedes_inner_polygon_method1(OB, OE, BE, iteration=iteration)
 print(Pi)
