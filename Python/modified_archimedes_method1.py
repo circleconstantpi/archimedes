@@ -37,7 +37,7 @@ def archimedes_inner_polygon_method1(OB, OE, BE, iteration=5):
     # Initialise the value of OA for the first iteration step.
     OA = OE
     # Run a for loop in the range from 0 to the value of iteration.
-    for i in range(0, iteration):
+    for i in range(0, iteration+1):
         # Calculate the number of edges.
         n = 6 * 2**i
         # No iteration on first loop.
