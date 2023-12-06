@@ -57,6 +57,7 @@ def archimedes_inner_polygon(AB, AC, BC, iteration=5, verbose=True):
         else:
             # Calculate the length of the hypotenuse and the length of the edge.
             AD = D(AB)/(D(BC**2/((AB+AC)**2)+1).sqrt())
+            #BD = D(D(AB)**2 - D(AD)**2).sqrt()
             BD = D(AB**2 - AD**2).sqrt()
             # Store the values for the next iteration.
             BC = D(BD)
@@ -83,10 +84,13 @@ def correct_digits(chkpi, refpi=''):
     a = "3."
     b = "14159265358979323846264338327950288419716939937510"
     c = "58209749445923078164062862089986280348253421170679"
+    # Join reference pi.
     if refpi == '':
         refpi = a + b + c
+    # Initialise the local variables.
     correct = ''
     idx = 0
+    # Compare two strings.
     try:
         for char in str(chkpi):
             if char == str(refpi)[idx]:
@@ -96,6 +100,7 @@ def correct_digits(chkpi, refpi=''):
                 break
     except:
         pass
+    # Return correct places and number.
     return (correct, idx-2)
 
 # Define Pi with 100 places.
