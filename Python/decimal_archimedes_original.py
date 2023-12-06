@@ -57,7 +57,6 @@ def archimedes_inner_polygon(AB, AC, BC, iteration=5, verbose=True):
         else:
             # Calculate the length of the hypotenuse and the length of the edge.
             AD = D(AB)/(D(BC**2/((AB+AC)**2)+1).sqrt())
-            #BD = D(D(AB)**2 - D(AD)**2).sqrt()
             BD = D(AB**2 - AD**2).sqrt()
             # Store the values for the next iteration.
             BC = D(BD)
