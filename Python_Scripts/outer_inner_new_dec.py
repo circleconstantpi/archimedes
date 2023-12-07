@@ -6,7 +6,7 @@ for the circle number Pi.
 
 Description:
 In principle Pi can be calculated up to a infinite number of correct
-places.
+places. Standard Python is able to calculate with maximum 15-17 places.
 
 Limitation:
 No limitations are known yet.
@@ -34,7 +34,6 @@ __version__ = "0.1"
 # Import the standard Python module math.
 from decimal import Decimal as D
 from decimal import getcontext
-import math
 
 # Initialise the constants.
 ITERATION = 59
@@ -89,6 +88,7 @@ AC = D(OA)/(D(3).sqrt())
 Pi = archimedes_outer_polygon(OA, OC, AC, iteration=ITERATION)
 print("Precision:", PRECISION)
 print("Iterations:", ITERATION)
-print("Ludolph van Ceulen calculated 35 places. We do so, too")
+print("Ludolph van Ceulen (* 1540; † 1610) calculated 35 places. We do so, too.")
+print("This calculation is like a simulation of the calculation by a human being.")
 print("Calculation: {:.35f}".format(Pi))
 print("Reference:   3.14159265358979323846264338327950288")
