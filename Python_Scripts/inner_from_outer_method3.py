@@ -16,7 +16,7 @@ On the test system Pi is reached with a precision of 13 places after 21
 iterations.
 
 Limitation:
-So fare Pi can be calculated up to 15 correct places. The code is
+So fare Pi can be calculated up to 13 correct places. The code is
 limited to round about 1021 iterations on the test system. Then an
 overflow error occurs.
 
