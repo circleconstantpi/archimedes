@@ -31,20 +31,19 @@ Differences to the usage in SageMath:
 1. The standard Python module math has to be imported.
 2. Python's exponentiation operator is ** not ^.
 '''
-
-# pylint: disable=redefined-outer-name
 # pylint: disable=invalid-name
+# pylint: disable=useless-return
 
 __author__ = "Dr. Peter Netz"
 __copyright__ = "Copyright (C), 2023 Dr. Peter Netz"
 __license__ = "MIT"
 __version__ = "0.2"
 
-# Initialise the number of iterations.
-ITERATION = 1021
-
 # Import the standard Python module math.
 import math
+
+# Initialise the number of iterations.
+ITERATION = 1021
 
 # Define the function for the iterative calculation of Pi.
 def inner_from_outer_method3(OB, OE, BE, iteration=5):
@@ -82,7 +81,7 @@ def inner_from_outer_method3(OB, OE, BE, iteration=5):
                 # Check whether the value for Pi is increasing.
                 if ac < oldac:
                     # Print an error message.
-                    print(errmsg0 + "\u0020" + errmsg)
+                    print("{0} {1}".format(errmsg0, errmsg))
                     # Restore value of ac.
                     ac = oldac
                     # Leave loop.
@@ -91,12 +90,11 @@ def inner_from_outer_method3(OB, OE, BE, iteration=5):
                 oldac = ac
             except OverflowError:
                 # Print an error message.
-                print(errmsg1 + "\u0020" + errmsg)
+                print("{0} {1}".format(errmsg1, errmsg))
                 # Leave loop.
                 break
-    # Return the approximation of Archimedes constant.
+    # Return the approximation of the Archimedes constant.
     return ac
-
 
 # ++++++++++++++++++++
 # Main script function
