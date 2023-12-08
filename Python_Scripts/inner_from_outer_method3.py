@@ -32,9 +32,6 @@ Differences to the usage in SageMath:
 2. Python's exponentiation operator is ** not ^.
 '''
 # pylint: disable=invalid-name
-# pylint: disable=useless-return
-# pylint: disable=too-many-locals
-# pylint: disable=too-many-arguments
 
 __author__ = "Dr. Peter Netz"
 __copyright__ = "Copyright (C), 2023 Dr. Peter Netz"
@@ -48,19 +45,20 @@ import math
 ITERATION = 1021
 
 # Set the ouput flags.
-VERBOSE = True
-SILENT = False
+VERBOSE = False
+SILENT = True
 
 # ******************************************
 # Define the helper function verbose_print()
 # ******************************************
 if VERBOSE:
     def verbose_print(*args):
+        '''Verbose print function.'''
         # Print each argument on a separate line.
         for arg in args:
             print(arg)
-        # End of function. Return None.
-        return None
+        # End of function. Return 1 for success.
+        return 1
 else:
     # Do nothing lambda function.
     verbose_print = lambda *args: None
@@ -70,11 +68,12 @@ else:
 # *****************************************
 if not SILENT:
     def silent_print(*args):
+        '''Silent print function.'''
         # Print each argument on a separate line.
         for arg in args:
             print(arg)
-        # End of function. Return None.
-        return None
+        # End of function. Return 1 for success.
+        return 1
 else:
     # Do nothing lambda function.
     silent_print = lambda *args: None
@@ -169,8 +168,8 @@ def main(iteration):
     # Run a simple test.
     Pi = inner_from_outer_method3(OB, OE, BE, iteration=iteration)
     print(Pi)
-    # End of function. Return None.
-    return None
+    # End of function. Return 1 for success.
+    return 1
 
 # Execute the script as module or as program.
 if __name__ == '__main__':
