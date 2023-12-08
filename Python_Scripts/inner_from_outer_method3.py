@@ -32,11 +32,12 @@ Differences to the usage in SageMath:
 2. Python's exponentiation operator is ** not ^.
 '''
 # pylint: disable=invalid-name
+# pylint: disable=unused-argument
 
 __author__ = "Dr. Peter Netz"
 __copyright__ = "Copyright (C), 2023 Dr. Peter Netz"
 __license__ = "MIT"
-__version__ = "0.4"
+__version__ = "0.5"
 
 # Import the standard Python module math.
 import math
@@ -46,13 +47,13 @@ ITERATION = 1021
 
 # Set the ouput flags.
 VERBOSE = False
-SILENT = True
+ERROR = False
 
 # ******************************************
 # Define the helper function verbose_print()
 # ******************************************
 if VERBOSE:
-    def verbose_print(*args):
+    def verbose_print(*args, **kwargs):
         '''Verbose print function.'''
         # Print each argument on a separate line.
         for arg in args:
@@ -61,14 +62,14 @@ if VERBOSE:
         return 1
 else:
     # Do nothing lambda function.
-    verbose_print = lambda *args: None
+    verbose_print = lambda *args, **kwargs: None
 
-# *****************************************
-# Define the helper function silent_print()
-# *****************************************
-if not SILENT:
-    def silent_print(*args):
-        '''Silent print function.'''
+# ****************************************
+# Define the helper function error_print()
+# ****************************************
+if ERROR:
+    def error_print(*args, **kwargs):
+        '''Error print function.'''
         # Print each argument on a separate line.
         for arg in args:
             print(arg)
@@ -76,7 +77,7 @@ if not SILENT:
         return 1
 else:
     # Do nothing lambda function.
-    silent_print = lambda *args: None
+    silent_print = lambda *args, **kwargs: None
 
 # ------------------------------------------------------------------------------
 # Define the function inner_from_outer_method3()
@@ -137,7 +138,7 @@ def inner_from_outer_method3(OB, OE, BE, iteration=5):
                 # Check whether the value for Pi is increasing.
                 if ac < oldac:
                     # Print output to the terminal.
-                    silent_print("{0} {1}".format(errmsg0, errmsg))
+                    error_print("{0} {1}".format(errmsg0, errmsg))
                     # Restore the value of ac.
                     ac = oldac
                     # Leave loop.
@@ -146,7 +147,7 @@ def inner_from_outer_method3(OB, OE, BE, iteration=5):
                 oldac = ac
             except OverflowError:
                 # Print output to the terminal.
-                silent_print("{0} {1}".format(errmsg1, errmsg))
+                error_print("{0} {1}".format(errmsg1, errmsg))
                 # Leave loop.
                 break
     # Return the approximation of the Archimedes constant.
