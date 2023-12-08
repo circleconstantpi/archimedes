@@ -37,7 +37,7 @@ Differences to the usage in SageMath:
 __author__ = "Dr. Peter Netz"
 __copyright__ = "Copyright (C), 2023 Dr. Peter Netz"
 __license__ = "MIT"
-__version__ = "0.2"
+__version__ = "0.3"
 
 # Import the standard Python module math.
 import math
@@ -48,7 +48,7 @@ ITERATION = 1021
 # ----------------------------------------------------------------------
 # Define the function archimedes_inner_polygon_method1()
 # ----------------------------------------------------------------------
-def archimedes_inner_polygon_method1(OB, OE, BE, iteration=5):
+def inner_from_outer_method1(OB, OE, BE, iteration=5):
     '''Archimedes algorithm for the iterative calculation of the
     perimeter of the inner regular polygon.'''
     # Store OA because it is fixed across the iterations while OE changes.
@@ -92,7 +92,7 @@ def main(iteration):
     OB = (1/2)*math.sqrt(3)
     BE = 1/2
     # Run a simple test.
-    Pi = archimedes_inner_polygon_method1(OB, OE, BE, iteration=iteration)
+    Pi = inner_from_outer_method1(OB, OE, BE, iteration=iteration)
     print(Pi)
     # End of function. Return None.
     return None
