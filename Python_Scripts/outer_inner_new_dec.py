@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+##!/usr/bin/python3
 '''Archimedes' algorithm for calculating the perimeter of the inner
 and outer regular polygon based on the Archimedean approach. The
 average value of the inner and outer perimeter is an approximation
@@ -42,9 +42,9 @@ PRECISION = 39
 getcontext().prec = PRECISION
 
 # Define the function for the iterative calculation of Pi.
-def archimedes_outer_polygon(OA, OC, AC, iteration=4):
+def outer_inner_polygon(OA, OC, AC, iteration=4):
     '''Archimedes algorithm for calculating the perimeter of the outer
-    regular polygon.'''
+    and inner regular polygon.'''
     # Store incircle radius for later use.
     r = D(OA)
     # Run a for loop in the range from 0 to the value of iteration plus 1.
@@ -79,7 +79,7 @@ OC = D(OA)*(D(2)/D(3))*D(3).sqrt()
 AC = D(OA)/(D(3).sqrt())
 
 # Run a simple test.
-Pi = archimedes_outer_polygon(OA, OC, AC, iteration=ITERATION)
+Pi = outer_inner_polygon(OA, OC, AC, iteration=ITERATION)
 print("Precision:", PRECISION)
 print("Iterations:", ITERATION)
 print("Ludolph van Ceulen (* 1540; † 1610) calculated 35 places. We do so, too.")
