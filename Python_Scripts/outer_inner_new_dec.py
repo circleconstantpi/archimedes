@@ -1,4 +1,4 @@
-##!/usr/bin/python3
+#!/usr/bin/python3
 '''Archimedes' algorithm for calculating the perimeter of the inner
 and outer regular polygon based on the Archimedean approach. The
 average value of the inner and outer perimeter is an approximation
@@ -28,7 +28,7 @@ docs.python.org/3.8/library/decimal.html
 __author__ = "Dr. Peter Netz"
 __copyright__ = "Copyright (C) 2023, Dr. Peter Netz"
 __license__ = "MIT"
-__version__ = "0.2"
+__version__ = "0.3"
 
 # Import the standard Python module math.
 from decimal import Decimal as D
@@ -42,7 +42,7 @@ PRECISION = 39
 getcontext().prec = PRECISION
 
 # Define the function for the iterative calculation of Pi.
-def archimedes_outer_polygon(OA, OC, AC, iteration=5):
+def archimedes_outer_polygon(OA, OC, AC, iteration=4):
     '''Archimedes algorithm for calculating the perimeter of the outer
     regular polygon.'''
     # Store incircle radius for later use.
@@ -51,9 +51,9 @@ def archimedes_outer_polygon(OA, OC, AC, iteration=5):
     for i in range(0, iteration+1):
         # Calculate the number of edges.
         n = 6*2**i
-        # No iteration on first loop.
+        # No calculation on first loop.
         if i == 0:
-            # Set the values for the first loop.
+            # Set the required values for the first loop.
             AD = D(AC)
             OD = D(OC)
         else:
@@ -63,8 +63,8 @@ def archimedes_outer_polygon(OA, OC, AC, iteration=5):
             # Store the values for the next iteration.
             AC = D(AD)
             OC = D(OD)
-        # Calculate the approximation for pi using lower and upper bound.
-        ac = n*(D(1)/D(2))*(1/r+1/OD)*AD
+    # Calculate the approximation for pi using lower and upper bound.
+    ac = (1/r+1/OD)*(AD/2)*n
     # Return the approximation of Archimedes constant.
     return ac
 
