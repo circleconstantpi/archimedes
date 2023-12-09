@@ -8,3 +8,4 @@ As soon as I have a little more time, I will explain in more detail how the corr
 
 
 <img src="archimedes_figure3.png" alt="Figure 3">
+Figure 3
