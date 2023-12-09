@@ -33,6 +33,9 @@ Differences to the usage in SageMath:
 '''
 # pylint: disable=invalid-name
 # pylint: disable=unused-argument
+# pylint: disable=eval-used
+# pylint: disable=global-statement
+# pylint: disable=too-many-locals
 
 __author__ = "Dr. Peter Netz"
 __copyright__ = "Copyright (C), 2023 Dr. Peter Netz"
@@ -46,38 +49,34 @@ import math
 ITERATION = 1021
 
 # Set the ouput flags.
+# Used so far: DATA, VERBOSE and ERROR.
+INFO = False
+DATA = False
+WARNING = False
 VERBOSE = False
 ERROR = False
+DEBUG = False
 
-# ******************************************
-# Define the helper function verbose_print()
-# ******************************************
-if VERBOSE:
-    def verbose_print(*args, **kwargs):
-        '''Verbose print function.'''
-        # Print each argument on a separate line.
-        for arg in args:
-            print(arg)
-        # End of function. Return 1 for success.
-        return 1
-else:
-    # Do nothing lambda function.
-    verbose_print = lambda *args, **kwargs: None
-
-# ****************************************
-# Define the helper function error_print()
-# ****************************************
-if ERROR:
-    def error_print(*args, **kwargs):
-        '''Error print function.'''
-        # Print each argument on a separate line.
-        for arg in args:
-            print(arg)
-        # End of function. Return 1 for success.
-        return 1
-else:
-    # Do nothing lambda function.
-    silent_print = lambda *args, **kwargs: None
+# **************************************
+# Define the helper function userprint()
+# **************************************
+def userprint(*args, **kwarks):
+    '''Print further informations depending on the related flag.'''
+    # Declare the global variables.
+    global INFO, DATA, WARNING, VERBOSE, ERROR, DEBUG
+    # Define the required dictionary.
+    dy = {0: "INFO", 1: "DATA", 2: "WARNING",
+          3: "VERBOSE", 4: "ERROR", 5: "DEBUG"}
+    # Loop over the keys of the dictionary.
+    for key in dy:
+        # Print output if value is True.
+        if args[0] == key and eval(dy[key]):
+            # Loop over the list of arguments starting after the declared type.
+            for arg in args[1:]:
+                # Print each argument on a separate line.
+                print(arg)
+    # End of function. Return 1 for success.
+    return 1
 
 # ------------------------------------------------------------------------------
 # Define the function inner_from_outer_method3()
@@ -109,36 +108,41 @@ def inner_from_outer_method3(OB, OE, BE, iteration=5):
     for i in range(0, iteration+1):
         # Calculate the number of edges.
         n = 6*2**i
-        # Print output to the terminal.
-        verbose_print("-"*24, "Loop: {}".format(i), "Edges: {}".format(n))
+        # Print loop data to the terminal.
+        msg0 = "-"*24
+        msg1 = "{0}{1}".format("Loop: ", i)
+        msg2 = "{0}{1}".format("Edges: ", n)
+        userprint(1, msg0, msg1, msg2)
         # No iteration on first loop.
         if i == 0:
             # Calculate the approximation for Pi.
             ac = (BE/OA)*n
+            # Print output to the terminal.
+            userprint(3, "{0}{1}".format("BE: ", BE), "{0}{1}".format("OA: ", OA))
             # Store value of pi in oldpi.
             oldac = ac
             # Print output to the terminal.
-            verbose_print("BE: {}".format(BE), "OA: {}".format(OA), "Pi: {}".format(ac))
+            userprint(1, "{0}{1}".format("Pi: ", ac))
         else:
             try:
                 # Calculate the length of the hypotenuse and the length of the edge.
                 BF = (BE*OB)/(OB+OE)
                 OF = math.sqrt(OB**2+BF**2)
                 # Print output to the terminal.
-                verbose_print("BF: {}".format(BF), "OF: {}".format(OF))
+                userprint(3, "{0}{1}".format("BF: ", BF), "{0}{1}".format("OF: ", OF))
                 # Store the values for the next iteration.
                 OB = OB+((OA-OF)*math.sqrt(1-(BF**2/OF**2)))
                 BE = BF*OA/OF
                 # Print output to the terminal.
-                verbose_print("OB: {}".format(OB), "BE: {}".format(BE))
+                userprint(3, "{0}{1}".format("OB: ", OB), "{0}{1}".format("BE: ", BE))
                 # Calculate the approximation for Pi.
                 ac = (BE/OA)*n
                 # Print output to the terminal.
-                verbose_print("Pi: {}".format(ac))
+                userprint(1, "{0}{1}".format("Pi: ", ac))
                 # Check whether the value for Pi is increasing.
                 if ac < oldac:
-                    # Print output to the terminal.
-                    error_print("{0} {1}".format(errmsg0, errmsg))
+                    # Print an error message to the terminal.
+                    userprint(4, "{0} {1}".format(errmsg0, errmsg))
                     # Restore the value of ac.
                     ac = oldac
                     # Leave loop.
@@ -146,8 +150,8 @@ def inner_from_outer_method3(OB, OE, BE, iteration=5):
                 # Store value of pi in oldpi.
                 oldac = ac
             except OverflowError:
-                # Print output to the terminal.
-                error_print("{0} {1}".format(errmsg1, errmsg))
+                # Print an error message to the terminal.
+                userprint(4, "{0} {1}".format(errmsg1, errmsg))
                 # Leave loop.
                 break
     # Return the approximation of the Archimedes constant.
