@@ -5,3 +5,6 @@ It should be noted that Python works with a limited number of decimal places by 
 Based on Archimedes' approach, further algorithms were developed to calculate both the lower limit and the upper limit as well as Pi as the mean value of the lower and upper limits.
 
 As soon as I have a little more time, I will explain in more detail how the corresponding equations can be derived from the geometric relationships. 
+
+
+<img src="archimedes_figure3.png" alt="Figure 3">
