@@ -9,10 +9,12 @@ As soon as I have a little more time, I will explain in more detail how the corr
 <img src="\images/archimedes_figure3.png" alt="Figure 3">
 Figure 3: The Works of Archimedes, Measurement of a Circle, geometrical model for one edge of the outer regular polygon
 
+<br>
 
 <img src="\images/archimedes_figure4.png" alt="Figure 3">
 Figure 4: The Works of Archimedes, Measurement of a Circle, geometrical model for one edge of the inner regular polygon
 
+<br>
 
 The Indian Aryabhatta, who is quoted in Bhaskara I, apparently knew the connection to the iterative calculation of the side lengths of a regular polygon using recurrence. This relationship can be found in the known sources under the name Archimedes algorithm.
 
