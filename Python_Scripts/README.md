@@ -7,5 +7,5 @@ Based on Archimedes' approach, further algorithms were developed to calculate bo
 As soon as I have a little more time, I will explain in more detail how the corresponding equations can be derived from the geometric relationships. 
 
 
-<img src="archimedes_figure3.png" alt="Figure 3">
+<img src="/images/archimedes_figure3.png" alt="Figure 3">
 Figure 3
