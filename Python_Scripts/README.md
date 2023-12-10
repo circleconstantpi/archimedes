@@ -18,4 +18,6 @@ The Indian Aryabhatta, who is quoted in Bhaskara I, apparently knew the relation
 
 The also so-called Archimedes algorithm, which can be found in a lot of resources, is the Archimedean Mean Iteration or the so-called Pfaff-Borchardt-Schwab algorithm.
 
+The latter method is similar to the Gauss-Legendre algorithm. In this method two numbers are repeatedly replaced by their arithmetic and geometric mean in order to approximate their arithmetic-geometric mean.
+
 Taking a look at Figure 3 and Figure 4 shows, that it is in principle not possible, to derive a recurrence relationship from two different geometrical approaches.
