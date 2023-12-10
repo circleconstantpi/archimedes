@@ -8,4 +8,8 @@ As soon as I have a little more time, I will explain in more detail how the corr
 
 
 <img src="\images/archimedes_figure3.png" alt="Figure 3">
-Figure 3
+Archimedes - Measurement of a Circle - Figure 3
+
+<img src="\images/archimedes_figure4.png" alt="Figure 3">
+Archimedes - Measurement of a Circle - Figure 4
+
