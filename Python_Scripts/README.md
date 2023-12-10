@@ -16,7 +16,7 @@ Figure 4: Archimedes, Measurement of a Circle, geometrical model for one edge of
 
 The Indian Aryabhatta, who is quoted in Bhaskara I, apparently knew the relationship to the iterative calculation of the side lengths of a regular polygon using recurrence. This relationship can be found in the known sources under the name Archimedes algorithm.
 
-The also so-called Archimedes algorithm, which can be found in a lot of resources, is called Archimedean iterative algorithm as well as the Archimedean Mean Iteration or the so-called Pfaff-Borchardt-Schwab algorithm.
+The also so-called Archimedes algorithm, which can be found in a lot of resources, is called Archimedean iterative algorithm, Archimedean mean iteration or Pfaff-Borchardt-Schwab algorithm as well as Archimedes recurrence formula.
 
 The latter method is similar to the Gauss-Legendre algorithm. In this method two numbers are repeatedly replaced by their arithmetic and geometric mean in order to approximate their arithmetic-geometric mean.
 
