@@ -21,3 +21,5 @@ The also so-called Archimedes algorithm, which can be found in a lot of resource
 The latter method is similar to the Gauss-Legendre algorithm. In this method two numbers are repeatedly replaced by their arithmetic and geometric mean in order to approximate their arithmetic-geometric mean.
 
 Taking a look at Figure 3 and Figure 4 shows, that it is in principle not possible, to derive a recurrence relationship from two different geometrical approaches.
+
+In the context of the Archimedes algorithm or Archimedes method a distinction must be made between recursive and recurrence or iterative algorithm. The wording recurrence or iterative is correct and recursive is not.
