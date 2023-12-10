@@ -1,28 +1,32 @@
 #!/usr/bin/python3
+'''Modern iterative Archimedes algorithm using the refinement from Dörrie.'''
 
 # Import the standard Python module math.
 import math
 
-# Define the startvalues.
-a0 = 2*math.sqrt(3)
-b0 = 3
+# Define the start values.
+a0 = 2 * math.sqrt(3)  # half of outer perimeter
+b0 = 3                 # half of inner perimeter
 
 # Set the number of iterations.
 iteration = 4
 
 # Loop an iteration from 0 to 5 to get 5 values of Pi.
 for i in range(0, iteration+1):
-    # In the first loop the startvalues gives Pi.
+    # Use the start values in the first loop.
     if i == 0:
-        newpi = (a0 + b0) /2
-        print(newpi)
+        a1 = a0
+        b1 = b0
     else:
-        # Calculate iterative Pi.
-        a1 = (2*a0*b0) / (a0 + b0)
+        # Calculate the half of inner and outer perimeter.
+        a1 = (2*a0*b0)/(a0 + b0)
         b1 = math.sqrt(b0*a1)
+        # Store the old values for the next loop.
         a0 = a1
         b0 = b1
-        b3 = (3*a1*b1) / (2*a1+b1)
-        a3 = (a1*b1**2)**(1/3)
-        newpi = (a3 + b3) / 2
-        print(newpi)
+    # Calculate the refinement of inner and outer bound.
+    b3 = (3*a1*b1)/(2*a1 + b1)
+    a3 = (a1 * b1**2)**(1/3)
+    # Calculate and print the Archimedes constant.
+    ac = (a3 + b3)/2
+    print(ac)
