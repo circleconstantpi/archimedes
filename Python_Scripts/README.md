@@ -8,8 +8,7 @@ As soon as I have a little more time, I will explain in more detail how the corr
 
 
 <img src="\images/archimedes_figure3.png" alt="Figure 3">
-Archimedes - Measurement of a Circle - Figure 3
+Figure 3: The Works of Archimedes, Measurement of a Circle, geometrical model for one edge of the outer regular polygon 
 
 <img src="\images/archimedes_figure4.png" alt="Figure 3">
-Archimedes - Measurement of a Circle - Figure 4
-
+Figure 4: The Works of Archimedes, Measurement of a Circle, geometrical model for one edge of the inner regular polygon
