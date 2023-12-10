@@ -6,11 +6,11 @@ Based on Archimedes' approach, further algorithms were developed to calculate bo
 
 As soon as I have a little more time, I will explain in more detail how the corresponding equations can be derived from the geometric relationships. 
 
-<img src="\images/archimedes_figure3.png" alt="Figure 3">
+<img src="\images/archimedes_figure3.png" alt="Figure 3"><br/>
 Figure 3: Archimedes, Measurement of a Circle, geometrical model for one edge of the outer regular polygon
 <br/>
 
-<img src="\images/archimedes_figure4.png" alt="Figure 3">
+<img src="\images/archimedes_figure4.png" alt="Figure 3"><br/>
 Figure 4: Archimedes, Measurement of a Circle, geometrical model for one edge of the inner regular polygon
 <br/>
 
