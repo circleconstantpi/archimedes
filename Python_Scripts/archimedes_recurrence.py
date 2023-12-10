@@ -1,9 +1,10 @@
 #!/usr/bin/python3
+'''Archimedes iterative algorithm.'''
 
 # Import the standard Python module math.
 import math
 
-# Define the startvalues.
+# Define the start values.
 a0 = 3
 b0 = 2*math.sqrt(3)
 
