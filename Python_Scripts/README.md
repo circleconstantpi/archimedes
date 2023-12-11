@@ -18,13 +18,21 @@ Figure 4: Archimedes, Measurement of a Circle, geometrical model for one edge of
 </p>
 <br/>
 
-Aryabhatta as well as Al Kashi apparently knew the relationship to the iterative calculation of the side lengths of a regular polygon using recurrence: 
+Aryabhatta as well as Al Kashi apparently knew the relationship to the iterative calculation of the side lengths of a regular polygon using recurrence.
 
 <p align="center">
 $s_{2n} = \sqrt{2 - \sqrt{ 4 - s_{n}^2}}$
 </p>
 
 This equation for the inner polygon in conjunction with a relationship to the outer polygon in form of an iterative formula can be found in the known sources under the name Archimedes algorithm.
+
+<p align="center">
+$s_{2n} = \sqrt{2 - \sqrt{ 4 - s_{n}^2}}$
+</p>
+
+<p align="center">
+$S_{n} = \frac{s_{n}}{\sqrt{1 - \left\frac{s_{n}}{2}\right^2}}}$
+</p>
 
 The also so-called Archimedes algorithm, which can be found in a lot of resources, is called Archimedean iterative algorithm, Archimedean mean iteration or Pfaff-Borchardt-Schwab algorithm as well as Archimedes recurrence formula.
 
