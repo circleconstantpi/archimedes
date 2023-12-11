@@ -12,6 +12,8 @@ As soon as I have a little more time, I will explain in more detail how the corr
 
 # The Archimedes' algorithm
 
+Not knowing that Pi is a transcendental number, Archimedes stated that it is possible to find a right-handed triangle that has the the same area as a circle. This is a similar problem like squaring the circle.     
+
 <p align="center">
 <img src="\images/archimedes_figure1.png" alt="Figure 3"><br/>
 Figure 3: Archimedes, Measurement of a Circle, geometrical model for one edge of the outer regular polygon
