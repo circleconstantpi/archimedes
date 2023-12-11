@@ -1,8 +1,5 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-'''Modern iterative Archimedes algorithm using the insights of Snellius
-and the refinement from Dörrie.
-'''
 
 # Import the standard Python module math.
 import math
