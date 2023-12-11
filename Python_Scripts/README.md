@@ -16,7 +16,7 @@ Figure 4: Archimedes, Measurement of a Circle, geometrical model for one edge of
 
 Aryabhatta as well as Al Kashi, who is quoted in Bhaskara I, apparently knew the relationship to the iterative calculation of the side lengths of a regular polygon using recurrence. This relationship can be found in the known sources under the name Archimedes algorithm.
 
-$s_{2n} = \sqrt{2 - \sqrt{ 4 - s_{n}^2}$
+$s_{2n} = \sqrt{2 - \sqrt{ 4 - s_{n}^2}}$
 
 The also so-called Archimedes algorithm, which can be found in a lot of resources, is called Archimedean iterative algorithm, Archimedean mean iteration or Pfaff-Borchardt-Schwab algorithm as well as Archimedes recurrence formula.
 
