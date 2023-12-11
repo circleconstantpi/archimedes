@@ -1,12 +1,22 @@
-# Introductory words
+# Introductory Words
 
-This section contains Python scripts that can be used to calculate the circle number Pi. Once completed, one will find here Python scripts that are based directly on Archimedes' ideas.
+This section contains Python scripts that can be used to calculate the circle number Pi. Once completed, one will find here a bunch of Python scripts that are based directly on Archimedes' ideas.
 
 It should be noted that Python works with a limited number of decimal places by default. This is also valid for square roots from the standard module 'math'. To avoid this problem, the standard Python module 'decimal' can be used. Take also a look at the docstrings in the Python scripts with respect to the aforementioned comment.
+
+Standard Python is not suitable for performing calculations with a sufficient number of decimal places. Nevertheless, I first create the algorithms in standard Python in order to convert them into a form in which the Python module decimal is used in a second step. 
 
 Based on Archimedes' approach, further algorithms were developed to calculate both the lower limit and the upper limit as well as Pi as the mean value of the lower and upper limits.
 
 As soon as I have a little more time, I will explain in more detail how the corresponding equations can be derived from the geometric relationships. 
+
+# The Archimedes' algorithm
+
+<p align="center">
+<img src="\images/archimedes_figure1.png" alt="Figure 3"><br/>
+Figure 3: Archimedes, Measurement of a Circle, geometrical model for one edge of the outer regular polygon
+</p>
+<br/>
 
 <p align="center">
 <img src="\images/archimedes_figure3.png" alt="Figure 3"><br/>
