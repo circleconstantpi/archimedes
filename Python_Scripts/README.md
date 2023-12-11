@@ -26,6 +26,8 @@ Figure 3: Archimedes, Measurement of a Circle, geometrical model for one edge of
 </p>
 <br/>
 
+In Proposition II he is using the last statement for the introduction of an upper and a lower bound for the base of such a right-handed triangle.
+
 <p align="center">
 <img src="\images/archimedes_figure4.png" alt="Figure 3"><br/>
 Figure 4: Archimedes, Measurement of a Circle, geometrical model for one edge of the inner regular polygon
