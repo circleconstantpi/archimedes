@@ -41,6 +41,10 @@ The also so-called Archimedes algorithm, which can be found in a lot of resource
 $S_{2n} = \frac{\huge{2 S_{n} s_{n}}}{\huge{S_{n}+ s_{n}}}$
 </p>
 
+<p align="center">
+$s_{2n} = \sqrt{S_{2n} s_{n}}$
+</p>
+
 The latter method is similar to the Gauss-Legendre algorithm. In this method two numbers are repeatedly replaced by their arithmetic and geometric mean in order to approximate their arithmetic-geometric mean.
 
 Taking a look at Figure 3 and Figure 4 shows, that it is in principle not possible, to derive a recurrence relationship from two different geometrical approaches.
