@@ -31,10 +31,8 @@ $s_{2n} = \sqrt{2 - \sqrt{ 4 - s_{n}^2}}$
 </p>
 
 <p align="center">
-$S_{n} = \frac{s_{n}}
-  {
-  \sqrt{1- \left( \frac{s_{n}}{2}^2 \right)}
-  }$
+$S_{n} = \frac{s_{n}}{
+  \sqrt{1- \left( \frac{s_{n}}{2}^2 \right)}}$
 </p>
 
 The also so-called Archimedes algorithm, which can be found in a lot of resources, is called Archimedean iterative algorithm, Archimedean mean iteration or Pfaff-Borchardt-Schwab algorithm as well as Archimedes recurrence formula.
