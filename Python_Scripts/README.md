@@ -31,7 +31,7 @@ $s_{2n} = \sqrt{2 - \sqrt{ 4 - s_{n}^2}}$
 </p>
 
 <p align="center">
-$S_{2n} = \frac{\huge{s_2n}}{
+$S_{2n} = \frac{\huge{s_{2n}}}{
   \large{\sqrt{1- \left( \frac{s_{2n}}{2} \right)^2}}}$
 </p>
 
