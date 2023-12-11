@@ -49,4 +49,4 @@ The latter method is similar to the Gauss-Legendre algorithm. In this method two
 
 Taking a look at Figure 3 and Figure 4 shows, that it is in principle not possible, to derive a recurrence relationship from two different geometrical approaches.
 
-In the context of the Archimedes algorithm or Archimedes method a distinction must be made between recursive and recurrence or iterative algorithm. The wording recurrence or iterative is correct and recursive is not.
+In the context of the Archimedes algorithm or Archimedes method a distinction must be made between recursive and recurrence or iterative algorithm. The wording recurrence or iterative is correct and recursive is not. It becomes recursive if we use symbolic math and when we do not use numbers for the calculation. 
