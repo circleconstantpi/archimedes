@@ -20,13 +20,13 @@ Figure 1: Archimedes, Measurement of a Circle, circle and right-handed triangle
 </p>
 <br/>
 
+In Proposition II he is using the last statement for the introduction of an upper and a lower bound for the base of such a right-handed triangle.
+
 <p align="center">
 <img src="\images/archimedes_figure3.png" alt="Figure 3"><br/>
 Figure 3: Archimedes, Measurement of a Circle, geometrical model for one edge of the outer regular polygon
 </p>
 <br/>
-
-In Proposition II he is using the last statement for the introduction of an upper and a lower bound for the base of such a right-handed triangle.
 
 <p align="center">
 <img src="\images/archimedes_figure4.png" alt="Figure 3"><br/>
