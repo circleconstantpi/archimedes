@@ -16,7 +16,7 @@ Not knowing that Pi is a transcendental number, Archimedes stated that it is pos
 
 <p align="center">
 <img src="\images/archimedes_figure1.png" alt="Figure 3"><br/>
-Figure 3: Archimedes, Measurement of a Circle, geometrical model for one edge of the outer regular polygon
+Figure 1: Archimedes, Measurement of a Circle, circle and right-handed triangle
 </p>
 <br/>
 
