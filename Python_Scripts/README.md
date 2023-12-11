@@ -37,6 +37,10 @@ $S_{2n} = \frac{\huge{s_{2n}}}{
 
 The also so-called Archimedes algorithm, which can be found in a lot of resources, is called Archimedean iterative algorithm, Archimedean mean iteration or Pfaff-Borchardt-Schwab algorithm as well as Archimedes recurrence formula.
 
+<p align="center">
+$S_{2n} = \frac{2S_ns_n}{S_n + s_n}$
+</p>
+
 The latter method is similar to the Gauss-Legendre algorithm. In this method two numbers are repeatedly replaced by their arithmetic and geometric mean in order to approximate their arithmetic-geometric mean.
 
 Taking a look at Figure 3 and Figure 4 shows, that it is in principle not possible, to derive a recurrence relationship from two different geometrical approaches.
