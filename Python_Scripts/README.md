@@ -16,7 +16,9 @@ Figure 4: Archimedes, Measurement of a Circle, geometrical model for one edge of
 
 Aryabhatta as well as Al Kashi apparently knew the relationship to the iterative calculation of the side lengths of a regular polygon using recurrence: 
 
-<center>$s_{2n} = \sqrt{2 - \sqrt{ 4 - s_{n}^2}}$</center>
+<center>
+  $s_{2n} = \sqrt{2 - \sqrt{ 4 - s_{n}^2}}$
+</center>
 
 This equation for the inner polygon in conjunction with a relationship to the outer polygon in form of an iterative formula can be found in the known sources under the name Archimedes algorithm.
 
