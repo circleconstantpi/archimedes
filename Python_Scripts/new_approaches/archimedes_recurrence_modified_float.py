@@ -35,7 +35,7 @@ for i in range(0, iteration+1):
     a3 = (a1 * b1**2)**(1/3)
     # Calculate and print the Archimedes constant.
     #ac = (a3 + b3)/2
-    ac = (1/r)*(a3 + 4*b3)/5
+    ac = (1/r)*(a3 + 2*b3)/3
     print(ac)
 
 print("\n3.14159265358979323\n")
