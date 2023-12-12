@@ -51,7 +51,7 @@ $S_{2n} = \frac{\huge{s_{2n}}}{
   \large{\sqrt{1- \left( \frac{\huge{s_{_{2n}}}}{2} \right)^2}}}$
 </p>
 
-The also so-called Archimedes algorithm, which can be found in a lot of resources, is called Archimedean iterative algorithm, Archimedean mean iteration or Pfaff-Borchardt-Schwab algorithm as well as Archimedes recurrence formula.
+The also so-called Archimedes algorithm, which can be found in a lot of resources, is called Archimedean iterative algorithm, Archimedean mean iteration, Pfaff-Borchardt-Schwab algorithm, Archimedes–Borchardt algorithm as well as Archimedes recurrence formula.
 
 <p align="center">
 $S_{2n} = \frac{\huge{2 S_{n} s_{n}}}{\huge{S_{n}+ s_{n}}}$
