@@ -6,6 +6,10 @@ process.
 Limitations:
 If the precision is too low, errors can be triggered when AX values
 should be calculated with Aitken's delta-squared process.
+
+See also:
+en.wikipedia.org/wiki/Aitken's_delta-squared_process
+encyclopediaofmath.org/wiki/Aitken_Delta^2_process
 '''
 # pylint: disable=invalid-name
 # pylint: disable=global-statement
@@ -37,16 +41,16 @@ PI100 = '''
 # ----------------------------------------------------------------------
 # Helper function remove_ws()
 # ----------------------------------------------------------------------
-def remove_ws(mystr):
+def remove_ws(instr):
     '''Remove whitespaces defined by a list.
     '''
     # Define the whitespaces to remove.
-    mapping = [("\n", ""), ("\r", ""), (" ", "")]
+    mapping = [("\n", ""), ("\r", ""), ("\t", ""), (" ", "")]
     # Remove the whitespaces.
     for k, v in mapping:
-        mystr = mystr.replace(k, v)
+        instr = instr.replace(k, v)
     # Return trimmed string.
-    return mystr
+    return instr
 
 # ----------------------------------------------------------------------
 # Function archimedes_aitken()
@@ -62,7 +66,7 @@ def archimedes_aitken(iteration):
     lower = []
     upper = []
     # Define Aitken's lambda function.
-    aitken = lambda x: D(x[0]*x[2] - x[1]**2) / D(x[0] + x[2] - 2*x[1])
+    AX = lambda x: D(x[0]*x[2] - x[1]**2) / D(x[0] + x[2] - 2*x[1])
     # Run an iteration from 0 to iteration plus 1.
     for i in range(0, iteration+1):
         # No calculation on first run.
@@ -82,8 +86,8 @@ def archimedes_aitken(iteration):
         if i >= 2:
             # Try to calculate Aitken's AX values.
             try:
-                a2 = aitken(upper)
-                b2 = aitken(lower)
+                a2 = AX(upper)
+                b2 = AX(lower)
             except InvalidOperation:
                 # On error ignore Aitken's AX values.
                 a2 = D(a1)
