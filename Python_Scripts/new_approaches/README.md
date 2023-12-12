@@ -5,3 +5,5 @@ When using the <code>float</code> number type the places after the decimal point
 The Archimedean approch for the calculation of Pi is used together with more or less well known approaches e.g. from Snellius, Dörrie and Aitken for a better approximation of Pi. 
 
 I have found a new approach to improving convergence for which I have not yet been able to find a reference or another source. A detailed mathematical proof is still pending.
+
+Precision and number of iterations give an idea of the quality of the algorithm. To make such a comparison more transparent I am using the same number of places of Pi and compare them with the calculated result. 
