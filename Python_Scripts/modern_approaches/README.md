@@ -1,3 +1,5 @@
 In this section two types of Python scripts are introduced. In general <code>Python3</code> is used. One type of Python scripts is using <code>int</code> and <code>float</code> numbers in conjunction with the standard Python module <code>math</code> which consist e.g. of a square root algorithm. The other type of Python scripts is using the standard Python module code>decimal</code> and the related number types.
 
 When using the <code>float</code> number type the places after the decimal point are limited to 15-17 places. This is a significant restriction. Using the standard Python module <code>decimal</code> and the related number types one can deal with nearly an infinite number of places. 
+
+The Archimedean approch is used together with more or less well known approaches e.g. from Snellius and Dörrie. 
