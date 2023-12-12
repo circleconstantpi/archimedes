@@ -90,19 +90,16 @@ def archimedes_aitken(iteration):
                 b2 = AX(lower)
             except InvalidOperation:
                 # On error ignore Aitken's AX values.
-                a2 = D(a1)
-                b2 = D(b1)
+                a2, b2 = D(a1), D(b1)
             except DivisionByZero:
                 # On error ignore Aitken's AX values.
-                a2 = D(a1)
-                b2 = D(b1)
+                a2, b2 = D(a1), D(b1)
             # Remove the first list element.
             lower.pop(0)
             upper.pop(0)
         else:
             # Do not calculate Aitken's AX values.
-            a2 = D(a1)
-            b2 = D(b1)
+            a2, b2 = D(a1), D(b1)
     # Calculate Archimedes' constant using the arithmetic mean.
     ac = D(b2 + a2) / D(2)
     # Return Archimedes' constant.
