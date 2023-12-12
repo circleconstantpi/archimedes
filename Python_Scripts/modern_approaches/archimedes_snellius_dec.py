@@ -1,14 +1,15 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-'''Modern iterative Archimedes algorithm using the insights with
-respect too the convergence of the inner and the outer bound from
-Snellius and the refinement of the lower and the upper bound from
-Dörrie.
+'''Calculation of the circle number Pi.
+
+The programmed iterative Archimedes algorithm uses the so-called
+Snellius acceleration to improve the calculation result of Pi.
+acceleration.
 '''
 
 # Import the standard Python module math.
 from decimal import Decimal as D
-from decimal import getcontext, ROUND_HALF_EVEN
+from decimal import getcontext, ROUND_HALF_DOWN
 
 # Define the constants for the calculation.
 PRECISION = 102
@@ -16,18 +17,16 @@ ITERATION = 83
 
 # Set the precision and the rounding method.
 getcontext().prec=PRECISION
-getcontext().rounding=ROUND_HALF_EVEN
+getcontext().rounding=ROUND_HALF_DOWN
 
 # Define the radius.
 r = 1
 
 # Define the start values.
-a0 = r * 2 * D(3).sqrt()   # half of outer perimeter
-b0 = r * 3                 # half of inner perimeter
+a0 = D(r) * D(2) * D(3).sqrt()   # half of outer perimeter
+b0 = D(r) * D(3)                 # half of inner perimeter
 
-# Set the number of iterations.
-
-# Loop an iteration from 0 to ITERATION plus 1.
+# Run an iteration from 0 to ITERATION plus 1.
 for i in range(0, ITERATION+1):
     # Use the start values in the first loop.
     if i == 0:
@@ -40,7 +39,7 @@ for i in range(0, ITERATION+1):
     # Store the old values for the next loop.
     a0 = D(a1)
     b0 = D(b1)
-# Calculate and print the Archimedes constant.
+# Calculate the Archimedes constant.
 ac = D((D(1)/D(r))*D(a1 + 2*b1))/D(3)
 
 # Print calculated and given Pi to the terminal window.
