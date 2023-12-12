@@ -2,4 +2,6 @@ In this section two types of Python scripts are introduced. In general <code>Pyt
 
 When using the <code>float</code> number type the places after the decimal point are limited to 15-17 places. This is a significant restriction. Using the standard Python module <code>decimal</code> and the related number types one can deal with nearly an infinite number of places. 
 
-The Archimedean approch is used together with more or less well known approaches e.g. from Snellius, Dörrie and Aitken for a better approximation of Pi. 
+The Archimedean approch for the calculation of Pi is used together with more or less well known approaches e.g. from Snellius, Dörrie and Aitken for a better approximation of Pi. 
+
+I have found a new approach to improving convergence for which I have not yet been able to find a reference or another source. A detailed mathematical proof is still pending.
