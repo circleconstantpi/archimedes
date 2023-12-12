@@ -7,7 +7,6 @@ Dörrie.
 '''
 
 # Import the standard Python module math.
-#import math
 from decimal import Decimal as D
 from decimal import getcontext, ROUND_HALF_EVEN
 
@@ -28,7 +27,7 @@ b0 = r * 3                 # half of inner perimeter
 # Set the number of iterations.
 iteration = 54
 
-# Loop an iteration from 0 to 5 to get 5 values of Pi.
+# Loop an iteration from 0 to ITERATION plus 1.
 for i in range(0, iteration+1):
     # Use the start values in the first loop.
     if i == 0:
