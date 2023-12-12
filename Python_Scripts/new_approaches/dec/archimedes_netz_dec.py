@@ -2,9 +2,16 @@
 # -*- coding: utf-8 -*-
 '''Archimedes algorithm.
 
-The programmed iterative Archimedes algorithm uses the approach from
-Dörrie for the improvement of the calculation result of Pi.
+The programmed iterative Archimedes algorithm uses the approach
+from Dörrie and the refinement from Netz for the improvement of
+the calculation result of Pi.
 '''
+# pylint: disable=invalid-name
+
+__author__ = "Dr. Peter Netz"
+__copyright__ = "Copyright (C) 2023, Dr. Peter Netz"
+__license__ = "MIT"
+__version__ = "0.1"
 
 # Import the standard Python module math.
 from decimal import Decimal as D
@@ -15,8 +22,55 @@ PRECISION = 102
 ITERATION = 54
 
 # Set the precision and the rounding method.
-getcontext().prec=PRECISION
-getcontext().rounding=ROUND_HALF_DOWN
+getcontext().prec = PRECISION
+getcontext().rounding = ROUND_HALF_DOWN
+
+# Define a heredoc consisting of Pi with 100 places.
+PI100 = '''
+3.
+14159265358979323846264338327950288419716939937510
+58209749445923078164062862089986280348253421170679
+'''
+
+# ----------------------------------------------------------------------
+# Helper function remove_ws()
+# ----------------------------------------------------------------------
+def remove_ws(instr):
+    '''Remove whitespaces defined by a list.
+    '''
+    # Define the whitespaces to remove.
+    mapping = [("\n", ""), ("\r", ""), ("\t", ""), (" ", "")]
+    # Remove the whitespaces.
+    for k, v in mapping:
+        instr = instr.replace(k, v)
+    # Return trimmed string.
+    return instr
+
+# ----------------------------------------------------------------------
+# Helper function correct_digits()
+# ----------------------------------------------------------------------
+def correct_digits(chkpi, refpi=''):
+    '''Calculate the correct digits of a given pi number.'''
+    # Define three parts of circle number pi.
+    a = "3."
+    b = "14159265358979323846264338327950288419716939937510"
+    c = "58209749445923078164062862089986280348253421170679"
+    if refpi == '':
+        refpi = a + b + c
+    if len(str(refpi)) < len(str(chkpi)):
+        return None, None
+    correct = ''
+    idx = 0
+    for char in str(chkpi):
+        if char == str(refpi)[idx]:
+            correct += char
+            idx += 1
+        else:
+            break
+    return (correct, idx-2)
+
+# Create PI100.
+PI100 = remove_ws(PI100)
 
 # Define the radius.
 r = 1
@@ -45,4 +99,7 @@ for i in range(0, ITERATION+1):
 ac = D((D(1)/D(r))*D(a3 + 4*b3))/D(5)
 
 print("Calculation:", str(ac)[:102])
-print("Reference:   3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679")
+print("Reference:  ", PI100)
+
+circle_constant, number_digits = correct_digits(str(ac)[:102], PI100)
+print("\nMatching places:", number_digits, " -> ", circle_constant)
