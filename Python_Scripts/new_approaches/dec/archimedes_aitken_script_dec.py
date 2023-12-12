@@ -1,11 +1,22 @@
 #!/usr/bin/python3
+# -*- coding: utf-8 -*-
 '''Archimedes iterative algorithm using the Aitken's delta-squared
 process.
+
+Limitations:
+If the precision is too low, errors can be triggered when AX values
+should be calculated with Aitken's delta-squared process.
 '''
+# pylint: disable=invalid-name
+# pylint: disable=global-statement
+# pylint: disable=unused-import
 
 # From standard Python module import some names.
 from decimal import Decimal as D
-from decimal import getcontext, setcontext, Context, ROUND_HALF_DOWN
+from decimal import getcontext, setcontext, Context, \
+                    InvalidOperation, DivisionByZero, \
+                    ROUND_HALF_DOWN, ROUND_HALF_EVEN, \
+                    ROUND_DOWN, ROUND_FLOOR
 
 # Set the global constants.
 ITERATION = 84
@@ -27,7 +38,8 @@ PI100 = '''
 # Helper function remove_ws()
 # ----------------------------------------------------------------------
 def remove_ws(mystr):
-    '''Remove whitespaces defined by a list.'''
+    '''Remove whitespaces defined by a list.
+    '''
     # Define the whitespaces to remove.
     mapping = [("\n", ""), ("\r", ""), (" ", "")]
     # Remove the whitespaces.
@@ -41,7 +53,8 @@ def remove_ws(mystr):
 # ----------------------------------------------------------------------
 def archimedes_aitken(iteration):
     '''Calculate Pi using the Archimedes algorithm and the Aitken's
-    delta-squared process'''
+    delta-squared process
+    '''
     # Define the start values.
     a0 = D(2) * D(3).sqrt()  # half of outer perimeter
     b0 = D(3)                # half of inner perimeter
@@ -67,9 +80,18 @@ def archimedes_aitken(iteration):
         upper.append(a1)
         # Aitken can be used up from 3 list elements.
         if i >= 2:
-            # Calculate Aitken's AX values.
-            a2 = aitken(upper)
-            b2 = aitken(lower)
+            # Try to calculate Aitken's AX values.
+            try:
+                a2 = aitken(upper)
+                b2 = aitken(lower)
+            except InvalidOperation:
+                # On error ignore Aitken's AX values.
+                a2 = D(a1)
+                b2 = D(b1)
+            except DivisionByZero:
+                # On error ignore Aitken's AX values.
+                a2 = D(a1)
+                b2 = D(b1)
             # Remove the first list element.
             lower.pop(0)
             upper.pop(0)
@@ -82,7 +104,9 @@ def archimedes_aitken(iteration):
     # Return Archimedes' constant.
     return ac
 
-# Main script function.
+# ++++++++++++++++++++
+# Main script function
+# ++++++++++++++++++++
 def main(iteration):
     '''Main script function.'''
     # Declare the global variable.
