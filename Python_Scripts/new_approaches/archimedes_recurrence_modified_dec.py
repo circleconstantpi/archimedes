@@ -44,7 +44,7 @@ for i in range(0, iteration+1):
     b3 = D(3*a1*b1)/D(2*a1 + b1)
     a3 = D(a1 * b1**2)**(D(1)/D(3))
 # Calculate and print the Archimedes constant.
-ac = D((D(1)/D(r))*D(a3 + 4*b3))/D(5)
+ac = D((D(1)/D(r))*D(a3 + 2*b3))/D(3)
 print("Calculation:", str(ac)[:102])
 
 print("Reference:   3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679")
