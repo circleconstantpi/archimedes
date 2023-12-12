@@ -10,8 +10,9 @@ Dörrie for the improvement of the calculation result of Pi.
 from decimal import Decimal as D
 from decimal import getcontext, ROUND_HALF_DOWN
 
-# Define the prcision for the calculation.
+# Initialise the constants.
 PRECISION = 102
+ITERATION = 82
 
 # Set the precision and the rounding method.
 getcontext().prec=PRECISION
@@ -24,11 +25,8 @@ r = 1
 a0 = r * 2 * D(3).sqrt()   # half of outer perimeter
 b0 = r * 3                 # half of inner perimeter
 
-# Set the number of iterations.
-iteration = 82
-
 # Loop an iteration from 0 to ITERATION plus 1.
-for i in range(0, iteration+1):
+for i in range(0, ITERATION+1):
     # Use the start values in the first loop.
     if i == 0:
         a1 = D(a0)
