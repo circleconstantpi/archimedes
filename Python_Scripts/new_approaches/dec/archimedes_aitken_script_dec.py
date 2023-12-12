@@ -15,6 +15,11 @@ encyclopediaofmath.org/wiki/Aitken_Delta^2_process
 # pylint: disable=global-statement
 # pylint: disable=unused-import
 
+__author__ = "Dr. Peter Netz"
+__copyright__ = "Copyright (C) 2023, Dr. Peter Netz"
+__license__ = "MIT"
+__version__ = "0.1"
+
 # From standard Python module import some names.
 from decimal import Decimal as D
 from decimal import getcontext, setcontext, Context, \
