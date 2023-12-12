@@ -3,58 +3,78 @@
 process.
 '''
 
-# Import the standard Python module math.
+# From standard Python module import some names.
 from decimal import Decimal as D
-from decimal import getcontext
+from decimal import getcontext, setcontext, Context, ROUND_HALF_DOWN
 
-# Set the constants.
-PRECISION = 152
+# Set the global constants.
 ITERATION = 84
+PRECISION = 152
+ROUNDING = ROUND_HALF_DOWN
 
-# Set the precision of the calculation.
-getcontext().prec = PRECISION
+# Define and set the user defined context.
+local_context = Context(prec=PRECISION, rounding=ROUNDING)
+setcontext(local_context)
 
+# Define a heredoc consisting of Pi with 100 places.
 PI100 = '''
 3.
 14159265358979323846264338327950288419716939937510
 58209749445923078164062862089986280348253421170679
 '''
 
+# ----------------------------------------------------------------------
+# Helper function remove_ws()
+# ----------------------------------------------------------------------
 def remove_ws(mystr):
-    mapping = [("\n", " "), ("\r", " "), (" ", "")]
+    '''Remove whitespaces defined by a list.'''
+    # Define the whitespaces to remove.
+    mapping = [("\n", ""), ("\r", ""), (" ", "")]
+    # Remove the whitespaces.
     for k, v in mapping:
         mystr = mystr.replace(k, v)
+    # Return trimmed string.
     return mystr
 
+# ----------------------------------------------------------------------
+# Function archimedes_aitken()
+# ----------------------------------------------------------------------
 def archimedes_aitken(iteration):
+    '''Calculate Pi using the Archimedes algorithm and the Aitken's
+    delta-squared process'''
     # Define the start values.
     a0 = D(2) * D(3).sqrt()  # half of outer perimeter
     b0 = D(3)                # half of inner perimeter
-    # Define to lists for saving lower and upper bound.
+    # Define the lists for saving the lower and the upper bounds.
     lower = []
     upper = []
-    # Def Aitken's lambda function.
+    # Define Aitken's lambda function.
     aitken = lambda x: D(x[0]*x[2] - x[1]**2) / D(x[0] + x[2] - 2*x[1])
-    # Run an iteration from 0 to ITERATION plus 1.
-    for i in range(0, ITERATION+1):
+    # Run an iteration from 0 to iteration plus 1.
+    for i in range(0, iteration+1):
+        # No calculation on first run.
         if i == 0:
             a1 = D(a0)
             b1 = D(b0)
         else:
             a1 = D(2*a0*b0)/D(a0 + b0)
             b1 = D(b0*a1).sqrt()
+        # Store the calculated values for the next iteration.
         b0 = D(b1)
         a0 = D(a1)
+        # Add lower and upper bounds to the given lists.
         lower.append(b1)
         upper.append(a1)
         # Aitken can be used up from 3 list elements.
         if i >= 2:
+            # Calculate Aitken's AX values.
             a2 = aitken(upper)
             b2 = aitken(lower)
             # Remove the first list element.
             lower.pop(0)
             upper.pop(0)
         else:
+            # Do not calculate Aitken's AX values.
             a2 = D(a1)
             b2 = D(b1)
     # Calculate Archimedes' constant using the arithmetic mean.
