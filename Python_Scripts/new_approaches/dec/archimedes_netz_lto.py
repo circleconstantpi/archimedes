@@ -11,7 +11,6 @@ geometric and arithmetic mean in conjunction with a Snellius acceleration
 in squared form. The acceleration of the convergence of the calculation
 is in principle a suitable selected weighted arithmetic.
 
-
 In the presented form, the precision and the number of iterations can be
 predicted via the number of desired decimal places of Pi.
 
