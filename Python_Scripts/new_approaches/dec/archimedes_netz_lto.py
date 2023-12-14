@@ -15,7 +15,7 @@ is in principle a suitable selected weighted arithmetic mean.
 In the presented form, the precision and the number of iterations can be
 predicted via the number of desired decimal places of Pi.
 
-The algorithm is tested up to 60.000 correct places of Pi in a manageable
+The algorithm is tested up to 70.000 correct places of Pi in a manageable
 period of time so far. Increasing the precision slows down the calculation
 process.
 
@@ -75,7 +75,7 @@ www.eveandersson.com/pi/digits/
 __author__ = "Dr. Peter Netz"
 __copyright__ = "Copyright (C) 2023, Dr. Peter Netz"
 __license__ = "MIT"
-__version__ = "0.2"
+__version__ = "0.3"
 
 # Import some standard Python modules.
 import sys
@@ -87,8 +87,17 @@ from decimal import getcontext, ROUND_HALF_DOWN, ROUND_UP
 
 # Set some user defined constants.
 RADIUS = 1        # radius of the circle
-PLACES = 1000     # number of requested places
-PROGRESS = False  # show or hide calculation progress
+PLACES = 10000     # number of requested places
+PROGRESS = True   # show or hide calculation progress
+
+# Choose the calculation method.
+# ARITHMETIC-MEAN -> 3
+# SNELLIUS        -> 2
+# DOERRIE         -> 1
+# NETZ            -> 0
+# Warning: Set OVERRUN to True and use userdefinded precision and
+#          iteration. Precalculated values are only valid for NETZ.
+METHOD = 0
 
 # Overrun the calculation of precision and iteration.
 OVERRUN = False
@@ -97,9 +106,14 @@ OVERRUN = False
 if OVERRUN:
     # Set further user defined constants.
     # Calculate Ludolph van Ceulen:
-    # PLACES = 35     # for testing purposes only
-    PRECISION = 37
-    ITERATION = 18
+    #PLACES = 35  # for testing purposes only
+    #PRECISION, ITERATION = 37, 18
+    # Doerrie:
+    #PRECISION, ITERATION = 1000, 829
+    # Snellius:
+    #PRECISION, ITERATION = 1002, 830
+    # Arithmetic mean:
+    PRECISION, ITERATION = 1660, 1660
 
 # Calculate the initial values.
 def init_values(places, offset=16):
@@ -322,10 +336,13 @@ def correct_digits(chkpi, refpi):
     # Initialise the local variables.
     correct = ''
     idx = 0
-    # Compare two strings.
-    for char in str(chkpi):
-        if char == str(refpi)[idx]:
+    # Run over the digits of Pi.
+    for char in str(refpi):
+        # Compare the calculated value with the reference value.
+        if char == str(chkpi)[idx]:
+            # Add the correct char to string.
             correct += char
+            # Increment counter.
             idx += 1
         else:
             # Leave loop.
@@ -357,16 +374,65 @@ def show_cursor():
 def print_iteration(citer):
     '''Print progress in form of the current iteration.
     '''
-    string = "Iteration: " + str(citer)
-    sys.stdout.write(string)
-    sys.stdout.write("\r")
-    sys.stdout.flush()
+    if citer % 100 == 0 and citer >= 100:
+        string = "Iteration: " + str(citer)
+        sys.stdout.write(string)
+        sys.stdout.write("\r")
+        sys.stdout.flush()
+
+# ----------------------------------------------------------------------
+# Function archimedes_arithmetic_mean()
+# ----------------------------------------------------------------------
+def archimedes_arithmetic_mean(a1, b1, r):
+    '''Function Archimedes-Arithmetic-Mean.
+
+         a₁ + b₁
+    ac = ───────
+           2⋅r
+    '''
+    # Calculate the Archimedes constant.
+    ac = (a1 + b1) / (2*r)
+    # Return the Archimedes constant.
+    return ac
+
+# ----------------------------------------------------------------------
+# Function archimedes_snellius()
+# ----------------------------------------------------------------------
+def archimedes_snellius(a1, b1, r):
+    '''Function Archimedes-Snellius.
+
+         a₁ + 2⋅b₁
+    ac = ─────────
+            3⋅r
+    '''
+    # Calculate the Archimedes constant.
+    ac = (a1 + 2*b1) / (3*r)
+    # Return the Archimedes constant.
+    return ac
+
+# ----------------------------------------------------------------------
+# Function archimedes_doerrie()
+# ----------------------------------------------------------------------
+def archimedes_doerrie(a1, b1, r):
+    '''Function Archimedes-Dörrie.
+
+                        ________
+          3⋅a₁⋅b₁    3 ╱      2
+         ───────── + ╲╱  a₁⋅b₁
+         2⋅a₁ + b₁
+    ac = ───────────────────────
+               2⋅r
+    '''
+    # Calculate the Archimedes constant.
+    ac = ((D(3*a1*b1)/D(2*a1 + b1)) + (D(a1 * b1**2)**(D(1)/D(3))))/D(2*r)
+    # Return the Archimedes constant.
+    return ac
 
 # ----------------------------------------------------------------------
 # Function archimedes_netz()
 # ----------------------------------------------------------------------
-def archimedes_netz(iteration, progress=False, r=D(1)):
-    '''Archimedes algorithm.
+def archimedes_netz(a1, b1, r):
+    '''Function Archimedes-Netz.
 
     Calculate the Archimedes constant using the idea of the so-called
     Snellius acceleration in something like a squared form as well as
@@ -380,6 +446,33 @@ def archimedes_netz(iteration, progress=False, r=D(1)):
      ac = ──────────────────────────
                    5⋅r
     '''
+    # Calculate the Archimedes constant.
+    ac = ((D(12*a1*b1)/D(2*a1 + b1)) + (D(a1 * b1**2)**(D(1)/D(3))))/D(5*r)
+    # Return the Archimedes constant.
+    return ac
+
+# ----------------------------------------------------------------------
+# Function archimedes_constant()
+# ----------------------------------------------------------------------
+def archimedes_constant(a1, b1, r, method=0):
+    '''Calculate Pi based on the method.'''
+    if method == 0:
+        ac = archimedes_netz(a1, b1, r)
+    elif method == 1:
+        ac = archimedes_doerrie(a1, b1, r)
+    elif method == 2:
+        ac = archimedes_snellius(a1, b1, r)
+    elif method == 3:
+        ac = archimedes_arithmetic_mean(a1, b1, r)
+    # Return the Archimedes constant.
+    return ac
+
+# ----------------------------------------------------------------------
+# Function calculate_pi()
+# ----------------------------------------------------------------------
+def calculate_pi(iteration, progress=False, r=D(1), method=0):
+    '''Archimedes algorithm.
+    '''
     # If progress True do something.
     if progress:
         # Hide the cursor.
@@ -391,8 +484,7 @@ def archimedes_netz(iteration, progress=False, r=D(1)):
     for i in range(0, iteration+1):
         # If progress True do something.
         if progress:
-            if i % 100 == 0 and iteration >= 100:
-                print_iteration(i)
+            print_iteration(i)
         # Use the start values in the first loop.
         if i == 0:
             a1 = a0
@@ -405,7 +497,7 @@ def archimedes_netz(iteration, progress=False, r=D(1)):
         a0 = a1
         b0 = b1
     # Calculate the Archimedes constant using.
-    ac = ((D(12*a1*b1)/D(2*a1 + b1)) + (D(a1 * b1**2)**(D(1)/D(3))))/D(5*r)
+    ac = archimedes_constant(a1, b1, r, method=method)
     # If progress True do something.
     if progress:
         # Show the cursor.
@@ -416,7 +508,7 @@ def archimedes_netz(iteration, progress=False, r=D(1)):
 # ++++++++++++++++++++
 # Main script function
 # ++++++++++++++++++++
-def main(iteration, radius, progress):
+def main(iteration, radius, progress, method):
     '''Main script function.
     '''
     # Initialise the local variable.
@@ -430,7 +522,7 @@ def main(iteration, radius, progress):
     # Leave script on KeyboardInterrupt.
     try:
         # Call function.
-        ac = archimedes_netz(iteration, progress=progress, r=radius)
+        ac = calculate_pi(iteration, progress=progress, r=radius, method=method)
     except KeyboardInterrupt:
         # Clean up and exit script.
         sys.stdout.write("\33[?25h")
@@ -438,7 +530,7 @@ def main(iteration, radius, progress):
         os._exit(1)
     # Print a summary to the screen.
     if PLACES <= KNOWN_PLACES:
-        print("Reference:")
+        print("\nReference:")
         print_pi(str(PI[:PLACES+2]), 50)
         _, correct_places = correct_digits(ac, PI)
         print("")
@@ -454,4 +546,4 @@ def main(iteration, radius, progress):
 # Execute script as module or as program.
 if __name__ == '__main__':
     # Call the main script function.
-    main(ITERATION, RADIUS, PROGRESS)
+    main(ITERATION, RADIUS, PROGRESS, METHOD)
