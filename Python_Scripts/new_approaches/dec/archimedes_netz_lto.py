@@ -26,11 +26,17 @@ Calculation results:
 As it seems the radius r has no influence on precision and iterations.
 
 Ludolph van Ceulen calculated 35 places of Pi applying the approach of
-Archimedes using 6*2^62 edges. We can do so with only 6*2^18 edges. This
-is significant faster.
+Archimedes using 6*2^62 edges. We can do so with only 6*2^18 edges.
+This is significant faster.
+
+Preliminary result:
+
+Using the weighted arithmetic mean as done in NETZ gives only good
+results in combination with DÖRRIE.
 
 Spin-off:
-Changing the formula for calculating the Archimedes constants resulted in:
+Changing the formula NETZ for calculating the Archimedes constants
+resulted in:
 
 Weight | Name      | Precision | Iterations | Correct Places
 ------------------------------------------------------------
@@ -87,14 +93,15 @@ from decimal import getcontext, ROUND_HALF_DOWN, ROUND_UP
 
 # Set some user defined constants.
 RADIUS = 1        # radius of the circle
-PLACES = 10000     # number of requested places
+PLACES = 10000    # number of requested places
 PROGRESS = True   # show or hide calculation progress
 
-# Choose the calculation method.
-# ARITHMETIC-MEAN -> 3
-# SNELLIUS        -> 2
-# DOERRIE         -> 1
-# NETZ            -> 0
+# Choose the calculation method:
+# WEIGHTED-ARITHMETIC-MEAN -> 4
+# ARITHMETIC-MEAN          -> 3
+# SNELLIUS                 -> 2
+# DOERRIE                  -> 1
+# NETZ                     -> 0
 # Warning: Set OVERRUN to True and use userdefinded precision and
 #          iteration. Precalculated values are only valid for NETZ.
 METHOD = 0
@@ -102,32 +109,33 @@ METHOD = 0
 # Overrun the calculation of precision and iteration.
 OVERRUN = False
 
-# Check value of constant OVERRUN.
+# Check value of constant OVERRUN. Set the constants.
+# Ludolph van Ceulen:
+# PLACES, PRECISION, ITERATION = 35, 37, 18
+# Dörrie:
+# PLACES, PRECISION, ITERATION = 1000, 1000, 829
+# Snellius:
+# PLACES, PRECISION, ITERATION = 1000, 1002, 830
+# Arithmetic mean:
+# PLACES, PRECISION, ITERATION = 1000, 1003, 1660
+# Weighted arithmetic mean:
+# PLACES, PRECISION, ITERATION = 1000, 1002, 1659
 if OVERRUN:
-    # Set further user defined constants.
-    # Calculate Ludolph van Ceulen:
-    #PLACES = 35  # for testing purposes only
-    #PRECISION, ITERATION = 37, 18
-    # Doerrie:
-    #PRECISION, ITERATION = 1000, 829
-    # Snellius:
-    #PRECISION, ITERATION = 1002, 830
-    # Arithmetic mean:
-    PRECISION, ITERATION = 1660, 1660
+    # Set the user defined constants.
+    PLACES, PRECISION, ITERATION = 100, 102, 54
 
 # Calculate the initial values.
 def init_values(places, offset=16):
     '''Predict precision and iteration by places.
 
-    From calculation it can be found:
-    PRECISION = 102 <- results in 100 correct places
-    ITERATION = 54  <- results in 100 correct places
+    Base values developed from data observations.
     '''
     # Set the base precision and base iteration.
     baseprec, baseiter = 1.02, 0.56
     # Calculate precision and iteration.
     calcprec = baseprec*places
     calciter = baseiter*places
+    # Round them up.
     precision = D(calcprec).quantize(D('1'), rounding=ROUND_UP)
     iteration = D(calciter).quantize(D('1'), rounding=ROUND_UP)
     # Consider the offset.
@@ -139,17 +147,15 @@ def init_values(places, offset=16):
 # Check value of constant OVERRUN.
 if not OVERRUN:
     # Initialise the script defined constants.
-    PRECISION, ITERATION = init_values(PLACES, offset=0)
+    # Offset is a kind of minimum precision.
+    PRECISION, ITERATION = init_values(PLACES, offset=4)
 
 # Set the precision and the rounding method.
 getcontext().prec = PRECISION
 getcontext().rounding = ROUND_HALF_DOWN
 
-# Initialise the constants.
-KNOWN_PLACES = 10000
-
 # Define a heredoc consisting of Pi with 10000 places.
-PI = '''
+PI_HEREDOC = '''
 3.
 1415926535897932384626433832795028841971693993751058209749445923078164062862089
 9862803482534211706798214808651328230664709384460955058223172535940812848111745
@@ -280,12 +286,24 @@ PI = '''
 1264836999892256959688159205600101655256375678
 '''
 
+# ----------------------------------------------------------------------
+# Helper function remove_whitestrings()
+# ----------------------------------------------------------------------
+def remove_whitespaces(string):
+    '''Remove all whitespaces defined by a list from a string.'''
+    # Define the list with whitespaces to remove.
+    mapping = [("\n", ""), ("\r", ""), ("\t", ""), (" ", "")]
+    # Remove the whitespaces from the given string.
+    for k, v in mapping:
+        string = string.replace(k, v)
+    # Return the trimmed string.
+    return string
+
 # *********************************
 # Generator function chunk_string()
 # *********************************
 def chunk_string(string, length):
-    '''Return a chunk string.
-    '''
+    '''Generate and return a chunk string.'''
     # Return the chunk string.
     return (string[0+i:length+i] for i in range(0, len(string), length))
 
@@ -293,8 +311,7 @@ def chunk_string(string, length):
 # Helper function print_pi()
 # ----------------------------------------------------------------------
 def print_pi(prtnum, prtlen, maxln=-1):
-    '''Print Pi in chunks.
-    '''
+    '''Print the circle number Pi in chunks.'''
     # Initialise the local variables.
     outstr = str(prtnum)
     outlen = int(prtlen)
@@ -310,52 +327,42 @@ def print_pi(prtnum, prtlen, maxln=-1):
         print("{:<4d}".format(count), i)
         # Increment the line counter.
         count += 1
+    # Print an empty line.
+    print("\r")
     # End of function. Return 1.
     return 1
-
-# ----------------------------------------------------------------------
-# Helper function remove_ws()
-# ----------------------------------------------------------------------
-def remove_ws(instr):
-    '''Remove whitespaces defined by a list.
-    '''
-    # Define the whitespaces to remove.
-    mapping = [("\n", ""), ("\r", ""), ("\t", ""), (" ", "")]
-    # Remove the whitespaces.
-    for k, v in mapping:
-        instr = instr.replace(k, v)
-    # Return trimmed string.
-    return instr
 
 # ----------------------------------------------------------------------
 # Helper function correct_digits()
 # ----------------------------------------------------------------------
 def correct_digits(chkpi, refpi):
-    '''Calculate the correct digits of a given pi number.
-    '''
+    '''Calculate the correct digits of a given pi number.'''
     # Initialise the local variables.
+    print(len(chkpi), len(refpi))
     correct = ''
     idx = 0
     # Run over the digits of Pi.
     for char in str(refpi):
-        # Compare the calculated value with the reference value.
-        if char == str(chkpi)[idx]:
-            # Add the correct char to string.
-            correct += char
-            # Increment counter.
-            idx += 1
-        else:
-            # Leave loop.
-            break
-    # Return the correct digits and thenumber of correct digits.
+        # Exit condition.
+        try:
+            # Compare the calculated value with the reference value.
+            if char == str(chkpi)[idx]:
+                # Add the correct char to string.
+                correct += char
+                # Increment counter.
+                idx += 1
+            else:
+                # Leave loop.
+                break
+        except:
+            pass    # Return the correct digits and thenumber of correct digits.
     return (correct, idx-2)
 
 # ----------------------------------------------------------------------
 # Function hide_cursor()
 # ----------------------------------------------------------------------
 def hide_cursor():
-    '''Hide the cursor.
-    '''
+    '''Hide the cursor.'''
     sys.stdout.write("\x1b[?25l")
     sys.stdout.flush()
 
@@ -363,8 +370,7 @@ def hide_cursor():
 # Function show_cursor()
 # ----------------------------------------------------------------------
 def show_cursor():
-    '''Show the cursor.
-    '''
+    '''Show the cursor.'''
     sys.stdout.write("\x1b[?25h")
     sys.stdout.flush()
 
@@ -372,13 +378,30 @@ def show_cursor():
 # Function print_iteration()
 # ----------------------------------------------------------------------
 def print_iteration(citer):
-    '''Print progress in form of the current iteration.
-    '''
+    '''Print progress in form of the current iteration.'''
     if citer % 100 == 0 and citer >= 100:
         string = "Iteration: " + str(citer)
         sys.stdout.write(string)
         sys.stdout.write("\r")
         sys.stdout.flush()
+
+# ----------------------------------------------------------------------
+# Function archimedes_weighted_arithmetic_mean()
+# ----------------------------------------------------------------------
+def archimedes_weighted_arithmetic_mean(a1, b1, r):
+    '''Function Archimedes-Arithmetic-Mean.
+
+         a₁ + w⋅b₁
+    ac = ─────────
+         (w + 1)⋅r
+    '''
+    # Print method which is used.
+    print("*** WEIGHTED-ARITHMETIC-MEAN ***")
+    # Calculate the Archimedes constant.
+    w = 4
+    ac = (a1 + w*b1) / ((w + 1)*r)
+    # Return the Archimedes constant.
+    return ac
 
 # ----------------------------------------------------------------------
 # Function archimedes_arithmetic_mean()
@@ -390,6 +413,8 @@ def archimedes_arithmetic_mean(a1, b1, r):
     ac = ───────
            2⋅r
     '''
+    # Print method which is used.
+    print("*** ARITHMETIC-MEAN ***")
     # Calculate the Archimedes constant.
     ac = (a1 + b1) / (2*r)
     # Return the Archimedes constant.
@@ -405,6 +430,8 @@ def archimedes_snellius(a1, b1, r):
     ac = ─────────
             3⋅r
     '''
+    # Print method which is used.
+    print("*** SNELLIUS ***")
     # Calculate the Archimedes constant.
     ac = (a1 + 2*b1) / (3*r)
     # Return the Archimedes constant.
@@ -423,6 +450,8 @@ def archimedes_doerrie(a1, b1, r):
     ac = ───────────────────────
                2⋅r
     '''
+    # Print method which is used.
+    print("*** DÖRRIE ***")
     # Calculate the Archimedes constant.
     ac = ((D(3*a1*b1)/D(2*a1 + b1)) + (D(a1 * b1**2)**(D(1)/D(3))))/D(2*r)
     # Return the Archimedes constant.
@@ -446,6 +475,8 @@ def archimedes_netz(a1, b1, r):
      ac = ──────────────────────────
                    5⋅r
     '''
+    # Print method which is used.
+    print("*** NETZ ***")
     # Calculate the Archimedes constant.
     ac = ((D(12*a1*b1)/D(2*a1 + b1)) + (D(a1 * b1**2)**(D(1)/D(3))))/D(5*r)
     # Return the Archimedes constant.
@@ -464,15 +495,16 @@ def archimedes_constant(a1, b1, r, method=0):
         ac = archimedes_snellius(a1, b1, r)
     elif method == 3:
         ac = archimedes_arithmetic_mean(a1, b1, r)
+    elif method == 4:
+        ac = archimedes_weighted_arithmetic_mean(a1, b1, r)
     # Return the Archimedes constant.
     return ac
 
 # ----------------------------------------------------------------------
 # Function calculate_pi()
 # ----------------------------------------------------------------------
-def calculate_pi(iteration, progress=False, r=D(1), method=0):
-    '''Archimedes algorithm.
-    '''
+def calculate_pi(iteration=19, r=D(1), method=0, progress=False):
+    '''Archimedes algorithm.'''
     # If progress True do something.
     if progress:
         # Hide the cursor.
@@ -508,42 +540,38 @@ def calculate_pi(iteration, progress=False, r=D(1), method=0):
 # ++++++++++++++++++++
 # Main script function
 # ++++++++++++++++++++
-def main(iteration, radius, progress, method):
-    '''Main script function.
-    '''
+def main(places, iteration, precision, radius, method, progress, piref):
+    '''Main script function.'''
     # Initialise the local variable.
     correct_places = "n/a"
-    # Check the given places.
-    if PLACES <= KNOWN_PLACES:
-        # Declare the global variable.
-        global PI
-        # Remove whitespaces from herestring.
-        PI = remove_ws(PI)
-    # Leave script on KeyboardInterrupt.
+    # Leave script on KeyboardInterrupt exception.
     try:
-        # Call function.
-        ac = calculate_pi(iteration, progress=progress, r=radius, method=method)
+        # Call the function for calculating Pi.
+        ac = calculate_pi(iteration=iteration, r=radius,
+                          method=method, progress=progress)
     except KeyboardInterrupt:
         # Clean up and exit script.
         sys.stdout.write("\33[?25h")
         sys.stdout.flush()
         os._exit(1)
     # Print a summary to the screen.
-    if PLACES <= KNOWN_PLACES:
-        print("\nReference:")
-        print_pi(str(PI[:PLACES+2]), 50)
-        _, correct_places = correct_digits(ac, PI)
-        print("")
-    print("Calculation:")
-    print_pi(ac[:PLACES+2], 50)
-    print("\nUsed precision:", str(PRECISION))
-    print("Used iteration:", str(ITERATION))
-    print("\nOutput of requested places:", str(PLACES))
+    if PLACES <= len(piref)-2:
+        print("\n{0}:".format("Reference"))
+        print_pi(str(piref[:places+2]), 50)
+        correct_number, correct_places = correct_digits(ac, piref)
+    print("{0}:".format("Calculation"))
+    print_pi(ac[:places+2], 50)
+    print_pi(correct_number[:places+2], 50)
+    print("Used precision:", str(precision))
+    print("Used iteration:", str(iteration))
+    print("\nOutput of requested places:", str(places))
     print("Matching places calculated:", str(correct_places))
     # End of function. Return 1.
     return 1
 
 # Execute script as module or as program.
 if __name__ == '__main__':
+    # Remove whitespaces from herestring.
+    PI = remove_whitespaces(PI_HEREDOC)
     # Call the main script function.
-    main(ITERATION, RADIUS, PROGRESS, METHOD)
+    main(PLACES, ITERATION, PRECISION, RADIUS, METHOD, PROGRESS, PI)
