@@ -29,8 +29,7 @@ Ludolph van Ceulen calculated 35 places of Pi applying the approach of
 Archimedes using 6*2^62 edges. We can do so with only 6*2^18 edges.
 This is significant faster.
 
-Preliminary result:
-
+Preliminary conclusion:
 Using the weighted arithmetic mean as done in NETZ gives only good
 results in combination with DÖRRIE.
 
