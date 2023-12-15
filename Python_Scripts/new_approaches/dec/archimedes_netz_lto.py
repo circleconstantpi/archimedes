@@ -337,7 +337,6 @@ def print_pi(prtnum, prtlen, maxln=-1):
 def correct_digits(chkpi, refpi):
     '''Calculate the correct digits of a given pi number.'''
     # Initialise the local variables.
-    print(len(chkpi), len(refpi))
     correct = ''
     idx = 0
     # Run over the digits of Pi.
