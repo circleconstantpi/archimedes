@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 '''Cubic root algorithms.
 
-Implementation of various procedures for study purposes.
+Implementation of various procedures for study purposes,
+namely Newton-Raphson, Bisection and Binary search.
 '''
 # pylint: disable=invalid-name
 # pylint: disable=redefined-outer-name
@@ -12,7 +13,7 @@ Implementation of various procedures for study purposes.
 __author__ = "Dr. Peter Netz"
 __copyright__ = "Copyright (C) 2023, Dr. Peter Netz"
 __license__ = "MIT"
-__version__ = "0.1"
+__version__ = "0.2"
 
 # Import the standard Python modules.
 from decimal import Decimal as D
@@ -64,6 +65,7 @@ def cubic_root_v1(decnum):
     d3 = D(3)
     # Calculate the start values.
     x0 = D(0.5) if decnum == 1 else (decnum - d1)/D(d3)
+    #x0 = (decnum - d1)/D(d3)
     xn = (d2*x0 + decnum/D(x0*x0)) / D(d3)
     # Run the iteration until the exit condition is reached.
     while abs(xn-x0) > eps:
@@ -87,14 +89,14 @@ def cubic_root_v2(decnum):
     c = getcontext()
     prec = c.prec
     # Set the convergence criterion.
-    eps = D(10)**(-(D(prec)-2))
+    eps = D(10)**(-(D(prec)-1))
     # Set low and high for the binary search.
     low = D(0)
-    high = 1 if decnum < 1 else decnum
+    high = D(1) if decnum < 1 else D(decnum)
     # Run an infinite loop.
     while True:
         # Calculate the value in the middle.
-        mid = low + (high - low) / 2
+        mid = (low + high) / 2
         # Calculate the error value.
         error = diff(decnum, mid)
         # If the value of error is less than eps leave loop.
@@ -126,23 +128,21 @@ def cubic_root_v3(num):
     eps = D(10)**(-(D(prec)-2))
     # Define the range within the result can be found.
     low = D(0)
-    high = 1 if num < 1 else num
-    # Set the start value.
-    x = D(0)
+    high = D(1) if num < 1 else D(num)
     # Run an infinite loop.
     while True:
         # Calculate the average value.
-        x = (low + high) / 2
+        x = D(low + high) / D(2)
         # Calculate function value as well as the function derivative value.
-        fvalue = f0(x, D(num))
+        fvalue = f0(x, num)
         dvalue = f1(x)
         # Calculate a new range.
-        if fvalue * dvalue <= 0:
+        if D(fvalue) * D(dvalue) <= 0:
             low = x
         else:
             high = x
         # Leave loop if cubic root is found.
-        if (fvalue < eps) and (fvalue >= 0):
+        if (fvalue <= eps) and (fvalue >= 0):
             break
     # Return the cubic root.
     return x
@@ -155,23 +155,23 @@ def cubic_root_v4(num):
     '''Use bisection for determining the cubic root.'''
     # Get the used decimal precision.
     c = getcontext()
-    prec = -D(c.prec-2)
+    prec = -D(c.prec-1)
     # Set the convergence criterion.
     eps = D(10)**(prec)
     # Define the range within the answer can be found.
     low = D(0)
-    high = 1 if num < 1 else num
+    high = D(1) if num < 1 else D(num)
     # Calculate value in the middle of the given range.
-    mid = (low + high) / 2
+    mid = D(low + high) / D(2)
     # Run an infinite loop.
-    while abs(mid*mid*mid-num) > eps:
+    while abs(mid*mid*mid-D(num)) > eps:
         # Check mid*mid*mid against num.
-        if mid*mid*mid < num:
+        if mid*mid*mid <= num:
             low = mid
         else:
             high = mid
         # Calculate value in the middle.
-        mid = (low + high) / 2
+        mid = D(low + high) / D(2)
     # Return the cubic root.
     return mid
 
@@ -198,13 +198,13 @@ print(cubic_root_v1(D(2)))
 print(cubic_root_v2(D(2)))
 print(cubic_root_v3(D(2)))
 print(cubic_root_v4(D(2)))
-print()
+print("\nCheck for values <= 1")
 print(cubic_root_v0(D(1)))
 print(cubic_root_v1(D(1)))
 print(cubic_root_v2(D(1)))
 print(cubic_root_v3(D(1)))
 print(cubic_root_v4(D(1)))
-print("\nCheck for values <= 1")
+print()
 print(cubic_root_v0(D(0.1)))
 print(cubic_root_v1(D(0.1)))
 print(cubic_root_v2(D(0.1)))
