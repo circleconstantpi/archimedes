@@ -13,7 +13,7 @@ namely Newton-Raphson, Bisection and Binary search.
 __author__ = "Dr. Peter Netz"
 __copyright__ = "Copyright (C) 2023, Dr. Peter Netz"
 __license__ = "MIT"
-__version__ = "0.2"
+__version__ = "0.3"
 
 # Import the standard Python modules.
 from decimal import Decimal as D
@@ -33,9 +33,9 @@ def cubic_root_v0(decnum):
     '''Applying the Newton-Raphson method to get the cubic root.'''
     # Get the used decimal precision.
     c = getcontext()
-    prec = c.prec
+    prec = -D(c.prec-1)
     # Set the convergence criterion.
-    eps = D(10)**(-(D(prec)-1))
+    eps = D(10)**(prec)
     # Initialise the local variables.
     d2 = D(2)
     d3 = D(3)
@@ -56,15 +56,15 @@ def cubic_root_v1(decnum):
     '''Applying the Newton-Raphson method to get the cubic root.'''
     # Get the used decimal precision.
     c = getcontext()
-    prec = c.prec
+    prec = -D(c.prec-1)
     # Set the convergence criterion
-    eps = D(10)**(-(D(prec)-1))
+    eps = D(10)**(prec)
     # Initialise the local variables.
     d1 = D(1)
     d2 = D(2)
     d3 = D(3)
     # Calculate the start values.
-    x0 = D(0.5) if decnum == 1 else (decnum - d1)/D(d3)
+    x0 = D(1)/D(3) if decnum == 1 else (decnum - d1)/D(d3)
     #x0 = (decnum - d1)/D(d3)
     xn = (d2*x0 + decnum/D(x0*x0)) / D(d3)
     # Run the iteration until the exit condition is reached.
@@ -87,9 +87,9 @@ def cubic_root_v2(decnum):
             return (mid * mid * mid) - num
     # Get the used decimal precision.
     c = getcontext()
-    prec = c.prec
+    prec = -D(c.prec-1)
     # Set the convergence criterion.
-    eps = D(10)**(-(D(prec)-1))
+    eps = D(10)**(prec)
     # Set low and high for the binary search.
     low = D(0)
     high = D(1) if decnum < 1 else D(decnum)
@@ -123,24 +123,24 @@ def cubic_root_v3(num):
         return 3 * x*x
     # Get the used decimal precision.
     c = getcontext()
-    prec = c.prec
+    prec = -D(c.prec-2)
     # Set the convergence criterion.
-    eps = D(10)**(-(D(prec)-2))
+    eps = D(10)**(prec)
     # Define the range within the result can be found.
     low = D(0)
     high = D(1) if num < 1 else D(num)
     # Run an infinite loop.
     while True:
         # Calculate the average value.
-        x = D(low + high) / D(2)
+        x = D(low + high) / 2
         # Calculate function value as well as the function derivative value.
         fvalue = f0(x, num)
         dvalue = f1(x)
         # Calculate a new range.
         if D(fvalue) * D(dvalue) <= 0:
-            low = x
+            low = D(x)
         else:
-            high = x
+            high = D(x)
         # Leave loop if cubic root is found.
         if (fvalue <= eps) and (fvalue >= 0):
             break
@@ -175,6 +175,29 @@ def cubic_root_v4(num):
     # Return the cubic root.
     return mid
 
+# ----------------------------------------------------------------------
+# Function cubic_root_v5()
+# ----------------------------------------------------------------------
+def cubic_root_v5(x):
+    '''Babylonian cubic root.'''
+    # Get the used decimal precision.
+    c = getcontext()
+    prec = -D(c.prec-1)
+    # Set the convergence criterion.
+    eps = D(10)**(prec)
+    # Set the constants.
+    p0 = D(3)
+    p1 = p0 - 1
+    # Set the start values.
+    y = D(x)
+    w = D(1)
+    # Run a loop until exit condition.
+    while abs(y - w) > eps:
+        y = (p1*y + w) / p0
+        w = x / y**p1
+    # Return the cubic root.
+    return y
+
 # Test values.
 a = D(3.46410161513775)
 b = D(3.21539030917347)
@@ -187,32 +210,36 @@ d = D(c)*D(c)*D(c)
 
 # Print some results of the cubic root.
 print("Check for values >= 1")
-print(cubic_root_v0(d))
 print(cubic_root_v1(d))
 print(cubic_root_v2(d))
 print(cubic_root_v3(d))
 print(cubic_root_v4(d))
+print(cubic_root_v5(d))
 print()
 print(cubic_root_v0(D(2)))
 print(cubic_root_v1(D(2)))
 print(cubic_root_v2(D(2)))
 print(cubic_root_v3(D(2)))
 print(cubic_root_v4(D(2)))
+print(cubic_root_v5(D(2)))
 print("\nCheck for values <= 1")
 print(cubic_root_v0(D(1)))
 print(cubic_root_v1(D(1)))
 print(cubic_root_v2(D(1)))
 print(cubic_root_v3(D(1)))
 print(cubic_root_v4(D(1)))
+print(cubic_root_v5(D(1)))
 print()
 print(cubic_root_v0(D(0.1)))
 print(cubic_root_v1(D(0.1)))
 print(cubic_root_v2(D(0.1)))
 print(cubic_root_v3(D(0.1)))
 print(cubic_root_v4(D(0.1)))
+print(cubic_root_v5(D(0.1)))
 print()
 print(cubic_root_v0(D(0.9)))
 print(cubic_root_v1(D(0.9)))
 print(cubic_root_v2(D(0.9)))
 print(cubic_root_v3(D(0.9)))
 print(cubic_root_v4(D(0.9)))
+print(cubic_root_v5(D(0.9)))
