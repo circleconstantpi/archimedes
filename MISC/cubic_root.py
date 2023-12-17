@@ -64,7 +64,6 @@ def cubic_root_v1(decnum):
     d3 = D(3)
     # Calculate the start values.
     x0 = D(0.5) if decnum == 1 else (decnum - d1)/D(d3)
-    #x0 = (decnum - d1)/D(d3)
     xn = (d2*x0 + decnum/D(x0*x0)) / D(d3)
     # Run the iteration until the exit condition is reached.
     while abs(xn-x0) > eps:
