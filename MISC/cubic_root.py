@@ -112,8 +112,9 @@ def cubic_root_v3(num):
     # Set the convergence criterion.
     eps = D(10)**(-(D(prec)-2))
     # Define the range within the result can be found
-    low = D(-num)
-    high = D(num)
+    val = 2*num
+    low = D(-val)
+    high = D(val)
     # Set the start value.
     x = D(0)
     # Run an infinite loop.
@@ -121,7 +122,7 @@ def cubic_root_v3(num):
         # Calculate the average value.
         x = (low + high) / 2
         # Calculate function value as well as the function derivative value.
-        fvalue = f0(x, num)
+        fvalue = f0(x, D(num))
         dvalue = f1(x)
         # Calculate a new range.
         if fvalue * dvalue <= 0:
@@ -133,7 +134,6 @@ def cubic_root_v3(num):
             break
     # Return the cubic root.
     return x
-
 
 # Test values.
 a = D(3.46410161513775)
