@@ -1,5 +1,18 @@
 #!/usr/bin/python3
-'''Cubic root algorithms.'''
+# -*- coding: utf-8 -*-
+'''Cubic root algorithms.
+
+Implementation of various procedures for study purposes.
+'''
+# pylint: disable=invalid-name
+# pylint: disable=redefined-outer-name
+# pylint: disable=no-else-return
+# pylint: disable=chained-comparison
+
+__author__ = "Dr. Peter Netz"
+__copyright__ = "Copyright (C) 2023, Dr. Peter Netz"
+__license__ = "MIT"
+__version__ = "0.1"
 
 # Import the standard Python modules.
 from decimal import Decimal as D
@@ -50,7 +63,8 @@ def cubic_root_v1(decnum):
     d2 = D(2)
     d3 = D(3)
     # Calculate the start values.
-    x0 = (decnum - d1)/D(d3)
+    x0 = D(0.5) if decnum == 1 else (decnum - d1)/D(d3)
+    #x0 = (decnum - d1)/D(d3)
     xn = (d2*x0 + decnum/D(x0*x0)) / D(d3)
     # Run the iteration until the exit condition is reached.
     while abs(xn-x0) > eps:
@@ -67,9 +81,9 @@ def cubic_root_v2(decnum):
     # Define the helper function.
     def diff(num, mid):
         if num > (mid * mid * mid):
-            return (num - (mid * mid * mid))
+            return num - (mid * mid * mid)
         else:
-            return ((mid * mid * mid) - num)
+            return (mid * mid * mid) - num
     # Get the used decimal precision.
     c = getcontext()
     prec = c.prec
@@ -77,7 +91,7 @@ def cubic_root_v2(decnum):
     eps = D(10)**(-(D(prec)-2))
     # Set low and high for the binary search.
     low = D(0)
-    high = D(decnum)
+    high = 1 if decnum < 1 else decnum
     # Run an infinite loop.
     while True:
         # Calculate the value in the middle.
@@ -102,19 +116,18 @@ def cubic_root_v3(num):
     '''Use bisection for determining the cubic root.'''
     # Define the governing function.
     def f0(x, num):
-        return (x*x*x - num)
+        return x*x*x - num
     # Define the derivative of the governing function.
     def f1(x):
-        return (3 * x*x)
+        return 3 * x*x
     # Get the used decimal precision.
     c = getcontext()
     prec = c.prec
     # Set the convergence criterion.
     eps = D(10)**(-(D(prec)-2))
     # Define the range within the result can be found.
-    val = 2*num
-    low = D(-val)
-    high = D(val)
+    low = D(0)
+    high = 1 if num < 1 else num
     # Set the start value.
     x = D(0)
     # Run an infinite loop.
@@ -130,10 +143,38 @@ def cubic_root_v3(num):
         else:
             high = x
         # Leave loop if cubic root is found.
-        if fvalue < eps and fvalue >= 0:
+        if (fvalue < eps) and (fvalue >= 0):
             break
     # Return the cubic root.
     return x
+
+
+# ----------------------------------------------------------------------
+# Function cubic_root_v4()
+# ----------------------------------------------------------------------
+def cubic_root_v4(num):
+    '''Use bisection for determining the cubic root.'''
+    # Get the used decimal precision.
+    c = getcontext()
+    prec = -D(c.prec-2)
+    # Set the convergence criterion.
+    eps = D(10)**(prec)
+    # Define the range within the answer can be found.
+    low = D(0)
+    high = 1 if num < 1 else num
+    # Calculate value in the middle of the given range.
+    mid = (low + high) / 2
+    # Run an infinite loop.
+    while abs(mid*mid*mid-num) > eps:
+        # Check mid*mid*mid against num.
+        if mid*mid*mid < num:
+            low = mid
+        else:
+            high = mid
+        # Calculate value in the middle.
+        mid = (low + high) / 2
+    # Return the cubic root.
+    return mid
 
 # Test values.
 a = D(3.46410161513775)
@@ -145,11 +186,34 @@ c = D(a + b) / D(2)
 # Exponentiate c.
 d = D(c)*D(c)*D(c)
 
-# Print c.
-print(c)
-
-# Print the results of the cbic root.
+# Print some results of the cubic root.
+print("Check for values >= 1")
 print(cubic_root_v0(d))
 print(cubic_root_v1(d))
 print(cubic_root_v2(d))
 print(cubic_root_v3(d))
+print(cubic_root_v4(d))
+print()
+print(cubic_root_v0(D(2)))
+print(cubic_root_v1(D(2)))
+print(cubic_root_v2(D(2)))
+print(cubic_root_v3(D(2)))
+print(cubic_root_v4(D(2)))
+print()
+print(cubic_root_v0(D(1)))
+print(cubic_root_v1(D(1)))
+print(cubic_root_v2(D(1)))
+print(cubic_root_v3(D(1)))
+print(cubic_root_v4(D(1)))
+print("\nCheck for values <= 1")
+print(cubic_root_v0(D(0.1)))
+print(cubic_root_v1(D(0.1)))
+print(cubic_root_v2(D(0.1)))
+print(cubic_root_v3(D(0.1)))
+print(cubic_root_v4(D(0.1)))
+print()
+print(cubic_root_v0(D(0.9)))
+print(cubic_root_v1(D(0.9)))
+print(cubic_root_v2(D(0.9)))
+print(cubic_root_v3(D(0.9)))
+print(cubic_root_v4(D(0.9)))
