@@ -111,7 +111,7 @@ def cubic_root_v3(num):
     prec = c.prec
     # Set the convergence criterion.
     eps = D(10)**(-(D(prec)-2))
-    # Define the range within the result can be found
+    # Define the range within the result can be found.
     val = 2*num
     low = D(-val)
     high = D(val)
