@@ -15,7 +15,7 @@ is in principle a suitable selected weighted arithmetic mean.
 In the presented form, the precision and the number of iterations can be
 predicted via the number of desired decimal places of Pi.
 
-The algorithm is tested up to 70.000 correct places of Pi in a manageable
+The algorithm is tested up to 40.000 correct places of Pi in a manageable
 period of time so far. Increasing the precision slows down the calculation
 process.
 
@@ -29,7 +29,8 @@ Ludolph van Ceulen calculated 35 places of Pi applying the approach of
 Archimedes using 6*2^62 edges. We can do so with only 6*2^18 edges.
 This is significant faster.
 
-Preliminary conclusion:
+Preliminary result:
+
 Using the weighted arithmetic mean as done in NETZ gives only good
 results in combination with DÖRRIE.
 
@@ -57,7 +58,7 @@ Bugs:
 No bugs known yet.
 
 Limitations:
-No limitations known yet.
+No limitations known yet. The current version is slower than the last one.
 
 To-Do:
 1. Check if calculations can be done on high-end graphic cards. So far the
@@ -76,11 +77,14 @@ www.eveandersson.com/pi/digits/
 # pylint: disable=invalid-name
 # pylint: disable=global-statement
 # pylint: disable=protected-access
+# pylint: disable=too-many-arguments
+# pylint: disable=multiple-statements
+# pylint: disable=unused-argument
 
 __author__ = "Dr. Peter Netz"
 __copyright__ = "Copyright (C) 2023, Dr. Peter Netz"
 __license__ = "MIT"
-__version__ = "0.3"
+__version__ = "0.5"
 
 # Import some standard Python modules.
 import sys
@@ -88,19 +92,24 @@ import os
 
 # Import names from the standard Python module decimal.
 from decimal import Decimal as D
-from decimal import getcontext, ROUND_HALF_DOWN, ROUND_UP
+from decimal import getcontext, localcontext, ROUND_HALF_DOWN, ROUND_UP
 
 # Set some user defined constants.
-RADIUS = 1        # radius of the circle
-PLACES = 10000    # number of requested places
-PROGRESS = True   # show or hide calculation progress
+RADIUS = 1         # radius of the circle
+PLACES = 1000      # number of requested places
+PROGRESS = True    # show or hide calculation progress
+
+# Define the dictionary with the used methods.
+METHODS = {"0": "DÖRRIE AND NETZ ARITHMETIC MEAN",
+           "1": "NETZ WEIGHTED ARITHMETIC MEAN",
+           "2": "DÖRRIE ARITHMETIC MEAN",
+           "3": "SNELLIUS ARITHMETIC MEAN",
+           "4": "ARITHMETIC MEAN",
+           "5": "WEIGHTED ARITHMETIC MEAN",
+           "6": "HERONIAN MEAN",
+           "7": "POWER MEAN"}
 
 # Choose the calculation method:
-# WEIGHTED-ARITHMETIC-MEAN -> 4
-# ARITHMETIC-MEAN          -> 3
-# SNELLIUS                 -> 2
-# DOERRIE                  -> 1
-# NETZ                     -> 0
 # Warning: Set OVERRUN to True and use userdefinded precision and
 #          iteration. Precalculated values are only valid for NETZ.
 METHOD = 0
@@ -108,20 +117,15 @@ METHOD = 0
 # Overrun the calculation of precision and iteration.
 OVERRUN = False
 
+# Choose FAST or SLOW.
+ALGO = "FAST"
+
 # Check value of constant OVERRUN. Set the constants.
 # Ludolph van Ceulen:
 # PLACES, PRECISION, ITERATION = 35, 37, 18
-# Dörrie:
-# PLACES, PRECISION, ITERATION = 1000, 1000, 829
-# Snellius:
-# PLACES, PRECISION, ITERATION = 1000, 1002, 830
-# Arithmetic mean:
-# PLACES, PRECISION, ITERATION = 1000, 1003, 1660
-# Weighted arithmetic mean:
-# PLACES, PRECISION, ITERATION = 1000, 1002, 1659
 if OVERRUN:
     # Set the user defined constants.
-    PLACES, PRECISION, ITERATION = 100, 102, 54
+    PLACES, PRECISION, ITERATION = 1000, 1002, 1660
 
 # Calculate the initial values.
 def init_values(places, offset=16):
@@ -130,24 +134,20 @@ def init_values(places, offset=16):
     Base values developed from data observations.
     '''
     # Set the base precision and base iteration.
-    baseprec, baseiter = 1.02, 0.56
+    baseprec, baseiter = 1.00, 0.56
     # Calculate precision and iteration.
-    calcprec = baseprec*places
-    calciter = baseiter*places
+    calcprec = D(baseprec)*D(places) + D(offset)
+    calciter = D(baseiter)*D(places) + D(offset)/D(2)
     # Round them up.
     precision = D(calcprec).quantize(D('1'), rounding=ROUND_UP)
     iteration = D(calciter).quantize(D('1'), rounding=ROUND_UP)
-    # Consider the offset.
-    precision += D(offset)
-    iteration += D(offset)/D(2)
     # Return required precision and iteration.
     return int(precision), int(iteration)
 
 # Check value of constant OVERRUN.
 if not OVERRUN:
     # Initialise the script defined constants.
-    # Offset is a kind of minimum precision.
-    PRECISION, ITERATION = init_values(PLACES, offset=4)
+    PRECISION, ITERATION = init_values(PLACES)
 
 # Set the precision and the rounding method.
 getcontext().prec = PRECISION
@@ -286,6 +286,35 @@ PI_HEREDOC = '''
 '''
 
 # ----------------------------------------------------------------------
+# Function cubic_root()
+# ----------------------------------------------------------------------
+def cubic_root(a):
+    '''Applying the Halleys method to get the cubic root.'''
+    # Calculate the number of leading digits.
+    cln = len(str(a).split(".")[0])
+    # Get the used decimal precision.
+    c = getcontext()
+    prec = c.prec-cln
+    # Set the convergence criterion.
+    eps = D(10)**(-prec)
+    # Set and calculate the start values.
+    x0 = a
+    xn = x0 * (x0*x0*x0 + 2*a) / (2 * x0*x0*x0 + a)
+    # Change the local context.
+    with localcontext() as ctx:
+        # Change the local context behaviour.
+        ctx.prec += 2
+        ctx.rounding = ROUND_HALF_DOWN
+        # Iterate until convergence condition is reached.
+        while abs(xn-x0) >= eps:
+            x0 = xn
+            xn = x0 * (x0*x0*x0 + 2*a) / (2 * x0*x0*x0 + a)
+    # Restore the precision.
+    xn = +xn
+    # Return the cubic root.
+    return xn
+
+# ----------------------------------------------------------------------
 # Helper function remove_whitestrings()
 # ----------------------------------------------------------------------
 def remove_whitespaces(string):
@@ -339,7 +368,7 @@ def correct_digits(chkpi, refpi):
     # Initialise the local variables.
     correct = ''
     idx = 0
-    # Run over the digits of Pi.
+    # Run over the digits of a given Pi number.
     for char in str(refpi):
         # Exit condition.
         try:
@@ -347,13 +376,15 @@ def correct_digits(chkpi, refpi):
             if char == str(chkpi)[idx]:
                 # Add the correct char to string.
                 correct += char
-                # Increment counter.
+                # Increment the counter.
                 idx += 1
             else:
-                # Leave loop.
+                # Do nothing than leave the loop.
                 break
-        except:
-            pass    # Return the correct digits and thenumber of correct digits.
+        except IndexError:
+            # Do nothing.
+            pass
+    # Return the correct digits and thenumber of correct digits.
     return (correct, idx-2)
 
 # ----------------------------------------------------------------------
@@ -377,69 +408,136 @@ def show_cursor():
 # ----------------------------------------------------------------------
 def print_iteration(citer):
     '''Print progress in form of the current iteration.'''
-    if citer % 100 == 0 and citer >= 100:
+    if citer == 0 or (citer % 100 == 0 and citer >= 100):
         string = "Iteration: " + str(citer)
         sys.stdout.write(string)
         sys.stdout.write("\r")
         sys.stdout.flush()
 
 # ----------------------------------------------------------------------
-# Function archimedes_weighted_arithmetic_mean()
+# Function ancient_greek_mean()
+#
+# See also:
+# www.mathpages.com/home/kmath462/kmath462.htm
 # ----------------------------------------------------------------------
-def archimedes_weighted_arithmetic_mean(a1, b1, r):
-    '''Function Archimedes-Arithmetic-Mean.
-
-         a₁ + w⋅b₁
-    ac = ─────────
-         (w + 1)⋅r
-    '''
-    # Print method which is used.
-    print("*** WEIGHTED-ARITHMETIC-MEAN ***")
+def ancient_greek_mean(a1, b1, r):
+    '''Archimedes constant calculation using the Heronian mean.'''
     # Calculate the Archimedes constant.
-    w = 4
-    ac = (a1 + w*b1) / ((w + 1)*r)
+    ac = a1**2/ (2*a1 - b1)*r
+    ac = (2*a1*b1 - b1**2)/ a1*r
+    ac = (a1**2 + b1**2)/(a1 + b1)*r
+    ac = (a1**2 - a1*b1 + b1**2)/a1*r
+    ac = (b1 + D(4*a1*b1 - 3*b1**2).sqrt())/2*r
     # Return the Archimedes constant.
     return ac
 
 # ----------------------------------------------------------------------
-# Function archimedes_arithmetic_mean()
+# Function power_mean()
+#
+# See also:
+# mathworld.wolfram.com/PowerMean.html
 # ----------------------------------------------------------------------
-def archimedes_arithmetic_mean(a1, b1, r):
-    '''Function Archimedes-Arithmetic-Mean.
+def power_mean(a1, b1, r):
+    '''Calculate the Archimedes constant using the Power mean.
+
+    Other names for the Power mean are Generalized mean or Hölder mean.
+    For p = 2 we get the Quadratic mean (Root mean square or RMS) and
+    for p = 3 we get the Cubic mean.
+               ___________
+              ╱   p      p
+             ╱  a₁  +  b₁
+          p ╱   ─────────
+          ╲╱        2
+    ac =  ────────────────
+                 r
+    '''
+    # To-Do:
+    # ac = ((a1**wa * b1**wb)**(1/D(wa+wb))) / r
+    # Calculate the Archimedes constant.
+    p = 1
+    ac = (((a1**p + b1**p)/D(2))**(1/D(p))) / r
+    # Return the Archimedes constant.
+    return ac
+
+# ----------------------------------------------------------------------
+# Function logarithmic_mean()
+#
+# See also:
+# mathworld.wolfram.com/ ->
+# <- /Arithmetic-Logarithmic-GeometricMeanInequality.html
+# ----------------------------------------------------------------------
+def logarithmic_mean(a1, b1, r):
+    '''Archimedes constant calculation using the Logarithmic mean.'''
+    # Calculate the Archimedes constant.
+    ac = (a1 - b1)/((D(a1).ln() - D(b1).ln())*r)
+    # Return the Archimedes constant.
+    return ac
+
+# ----------------------------------------------------------------------
+# Function heronian_mean()
+#
+# See also:
+# mathworld.wolfram.com/HeronianMean.html
+# ----------------------------------------------------------------------
+def heronian_mean(a1, b1, r):
+    '''Archimedes constant calculation using the Heronian mean.'''
+    # Calculate the Archimedes constant.
+    ac = (a1 + D(a1*b1).sqrt() + b1)/D(3 * r)
+    # Return the Archimedes constant.
+    return ac
+
+# ----------------------------------------------------------------------
+# Function archimedes_weighted_arithmetic_mean()
+# ----------------------------------------------------------------------
+def weighted_arithmetic_mean(a1, b1, r):
+    '''Archimedes constant calculation using weighted arithmetic mean.
+
+         wa⋅a₁ + wb⋅b₁
+    ac = ─────────────
+          (wa + wb)⋅r
+    '''
+    # Calculate the Archimedes constant.
+    wa = 1
+    wb = 4
+    ac = (wa*a1 + wb*b1)/((wa + wb)*r)
+    # Return the Archimedes constant.
+    return ac
+
+# ----------------------------------------------------------------------
+# Function arithmetic_mean()
+# ----------------------------------------------------------------------
+def arithmetic_mean(a1, b1, r):
+    '''Archimedes constant calculation using arithmetic mean.
 
          a₁ + b₁
     ac = ───────
            2⋅r
     '''
-    # Print method which is used.
-    print("*** ARITHMETIC-MEAN ***")
     # Calculate the Archimedes constant.
     ac = (a1 + b1) / (2*r)
     # Return the Archimedes constant.
     return ac
 
 # ----------------------------------------------------------------------
-# Function archimedes_snellius()
+# Function snellius_mean()
 # ----------------------------------------------------------------------
-def archimedes_snellius(a1, b1, r):
-    '''Function Archimedes-Snellius.
+def snellius_mean(a1, b1, r):
+    '''Archimedes constant calculation using Snellius.
 
          a₁ + 2⋅b₁
     ac = ─────────
             3⋅r
     '''
-    # Print method which is used.
-    print("*** SNELLIUS ***")
     # Calculate the Archimedes constant.
     ac = (a1 + 2*b1) / (3*r)
     # Return the Archimedes constant.
     return ac
 
 # ----------------------------------------------------------------------
-# Function archimedes_doerrie()
+# Function doerrie_method()
 # ----------------------------------------------------------------------
-def archimedes_doerrie(a1, b1, r):
-    '''Function Archimedes-Dörrie.
+def doerrie_mean(a1, b1, r):
+    '''Archimedes constant calculation using Dörrie.
 
                         ________
           3⋅a₁⋅b₁    3 ╱      2
@@ -448,18 +546,42 @@ def archimedes_doerrie(a1, b1, r):
     ac = ───────────────────────
                2⋅r
     '''
-    # Print method which is used.
-    print("*** DÖRRIE ***")
     # Calculate the Archimedes constant.
     ac = ((D(3*a1*b1)/D(2*a1 + b1)) + (D(a1 * b1**2)**(D(1)/D(3))))/D(2*r)
     # Return the Archimedes constant.
     return ac
 
 # ----------------------------------------------------------------------
-# Function archimedes_netz()
+# Function doerrie_weighted_geometric_mean()
 # ----------------------------------------------------------------------
-def archimedes_netz(a1, b1, r):
-    '''Function Archimedes-Netz.
+def netz_doerrie_weighted_geometric_mean(a1, b1, r):
+    '''Archimedes constant calculation using Dörrie and weighted geometric mean
+                                         1
+                                      ───────
+                                      wa + wb
+         ⎛                      1    ⎞
+         ⎜                      ─⋅wa ⎟
+         ⎜           wb         3    ⎟
+         ⎜⎛ 3⋅a₁⋅b₁ ⎞   ⎛     2⎞     ⎟
+         ⎜⎜─────────⎟ ⋅ ⎝a₁⋅b₁ ⎠     ⎟
+         ⎝⎝2⋅a₁ + b₁⎠                ⎠
+    ac = ─────────────────────────────
+                      r
+
+    '''
+    # Calculate the Archimedes constant.
+    wa = 1
+    wb = 4
+    ac = (((((3*a1*b1)/(2*a1 + b1))**wb)*(((a1*b1**2)**(wa/D(3))))**(1/D(wa + wb))))/r
+    # Return the Archimedes constant.
+    return ac
+
+
+# ----------------------------------------------------------------------
+# Function netz_arithmetic_mean()
+# ----------------------------------------------------------------------
+def netz_arithmetic_mean(a1, b1, r):
+    '''Archimedes constant calculation using the referenz method.
 
     Calculate the Archimedes constant using the idea of the so-called
     Snellius acceleration in something like a squared form as well as
@@ -473,10 +595,11 @@ def archimedes_netz(a1, b1, r):
      ac = ──────────────────────────
                    5⋅r
     '''
-    # Print method which is used.
-    print("*** NETZ ***")
     # Calculate the Archimedes constant.
-    ac = ((D(12*a1*b1)/D(2*a1 + b1)) + (D(a1 * b1**2)**(D(1)/D(3))))/D(5*r)
+    #ac = (((12*a1*b1)/(2*a1 + b1)) + ((a1 * b1**2)**(1/D(3))))/5*r
+    a2 = (3*a1*b1)/(2*a1 + b1)
+    b2 = cubic_root(a1 * b1*b1)
+    ac = (4*a2 + b2) / 5*r
     # Return the Archimedes constant.
     return ac
 
@@ -484,56 +607,110 @@ def archimedes_netz(a1, b1, r):
 # Function archimedes_constant()
 # ----------------------------------------------------------------------
 def archimedes_constant(a1, b1, r, method=0):
-    '''Calculate Pi based on the method.'''
+    '''Return Pi based on the choosen method.'''
+    # Calculate Pi based on choosen method.
     if method == 0:
-        ac = archimedes_netz(a1, b1, r)
+        ac = netz_arithmetic_mean(a1, b1, r)
     elif method == 1:
-        ac = archimedes_doerrie(a1, b1, r)
+        ac = netz_doerrie_weighted_geometric_mean(a1, b1, r)
     elif method == 2:
-        ac = archimedes_snellius(a1, b1, r)
+        ac = doerrie_mean(a1, b1, r)
     elif method == 3:
-        ac = archimedes_arithmetic_mean(a1, b1, r)
+        ac = snellius_mean(a1, b1, r)
     elif method == 4:
-        ac = archimedes_weighted_arithmetic_mean(a1, b1, r)
+        ac = arithmetic_mean(a1, b1, r)
+    elif method == 5:
+        ac = weighted_arithmetic_mean(a1, b1, r)
+    elif method == 6:
+        ac = heronian_mean(a1, b1, r)
+    elif method == 7:
+        ac = power_mean(a1, b1, r)
     # Return the Archimedes constant.
     return ac
 
 # ----------------------------------------------------------------------
-# Function calculate_pi()
+# Function inner_outer_perimeter()
 # ----------------------------------------------------------------------
-def calculate_pi(iteration=19, r=D(1), method=0, progress=False):
-    '''Archimedes algorithm.'''
-    # If progress True do something.
-    if progress:
-        # Hide the cursor.
-        hide_cursor()
+def inner_outer_perimeter(r):
+    '''Generator function for calculating inner and outer perimeter.'''
     # Define the start values.
     a0 = r * 2 * D(3).sqrt()   # half of the outer perimeter
     b0 = r * 3                 # half of the inner perimeter
-    # Loop an iteration from 0 to ITERATION plus 1.
-    for i in range(0, iteration+1):
-        # If progress True do something.
-        if progress:
-            print_iteration(i)
-        # Use the start values in the first loop.
-        if i == 0:
+    # Initialise the loop variable.
+    count = 0
+    # Run an infinite loop.
+    while True:
+        # Use the start values in the zeroth loop.
+        if count == 0:
             a1 = a0
             b1 = b0
         else:
             # Calculate the half of inner and outer perimeter.
-            a1 = D(2*a0*b0)/D(a0 + b0)
+            a1 = (2*a0*b0)/(a0 + b0)
             b1 = D(b0*a1).sqrt()
         # Store the old values for the next loop.
         a0 = a1
         b0 = b1
-    # Calculate the Archimedes constant using.
+        # Increment the counter.
+        count += 1
+        # Yield a1 and b1.
+        yield a1, b1
+
+# Instantiate the generator.
+cf = inner_outer_perimeter(RADIUS)
+
+# ----------------------------------------------------------------------
+# Function calculate_pi0()
+# ----------------------------------------------------------------------
+def calculate_pi0(places, iteration=16, r=D(1), method=0, progress=False):
+    '''Archimedes algorithm.'''
+    # Hide the cursor.
+    if progress: hide_cursor()
+    # Loop an iteration from 0 to ITERATION plus 1.
+    for i in range(0, iteration+1):
+        # Print progress.
+        if progress: print_iteration(i)
+        #  Calculate the half of inner and outer perimeter.
+        a1, b1 = next(cf)
+    # Calculate the Archimedes constant.
     ac = archimedes_constant(a1, b1, r, method=method)
-    # If progress True do something.
-    if progress:
-        # Show the cursor.
-        show_cursor()
+    # Show the cursor.
+    if progress: show_cursor()
     # Return the Archimedes constant.
-    return str(ac)
+    return str(ac), i
+
+# ----------------------------------------------------------------------
+# Function calculate_pi1()
+# ----------------------------------------------------------------------
+def calculate_pi1(places, iteration=16, r=D(1), method=0, progress=False):
+    '''Archimedes algorithm.'''
+    # Initialise array and variable.
+    ac = None
+    acarr = []
+    # Hide the cursor.
+    if progress: hide_cursor()
+    # Loop an iteration from 0 to ITERATION plus 1.
+    for i in range(0, iteration*4):
+        # Print progress.
+        if progress: print_iteration(i)
+        #  Calculate the half of inner and outer perimeter.
+        a1, b1 = next(cf)
+        # Calculate the Archimedes constant.
+        ac = archimedes_constant(a1, b1, r, method=method)
+        # Add truncated value to array.
+        acarr.append(str(ac)[:places+3])
+        # Check if there are 3 elements in the array.
+        if len(acarr) >= 5:
+            # Check if all array elements are equal.
+            if len(set(acarr)) == 1:
+                # Leave loop.
+                break
+            # Remove first element from array.
+            acarr.pop(0)
+    # Show the cursor.
+    if progress: show_cursor()
+    # Return the Archimedes constant.
+    return str(ac), i-5
 
 # ++++++++++++++++++++
 # Main script function
@@ -542,32 +719,46 @@ def main(places, iteration, precision, radius, method, progress, piref):
     '''Main script function.'''
     # Initialise the local variable.
     correct_places = "n/a"
+    correct_number = "n/a"
     # Leave script on KeyboardInterrupt exception.
     try:
-        # Call the function for calculating Pi.
-        ac = calculate_pi(iteration=iteration, r=radius,
-                          method=method, progress=progress)
+        if ALGO == "FAST":
+            # Call the function for calculating Pi.
+            ac, i = calculate_pi0(places, iteration=iteration, r=radius,
+                                  method=method, progress=progress)
+        elif ALGO == "SLOW":
+            # Call the function for calculating Pi.
+            ac, i = calculate_pi1(places, iteration=iteration, r=radius,
+                                  method=method, progress=progress)
     except KeyboardInterrupt:
         # Clean up and exit script.
         sys.stdout.write("\33[?25h")
         sys.stdout.flush()
         os._exit(1)
     # Print a summary to the screen.
+    if progress: print('\n\r')
+    mstr = METHODS[str(method)]
+    print("*"*(len(mstr)+4))
+    print("* " + METHODS[str(method)] + " *")
+    print("*"*(len(mstr)+4))
     if PLACES <= len(piref)-2:
         print("\n{0}:".format("Reference"))
         print_pi(str(piref[:places+2]), 50)
-        correct_number, correct_places = correct_digits(ac, piref)
+        correct_number, correct_places = correct_digits(ac, piref[:len(ac)+2])
     print("{0}:".format("Calculation"))
     print_pi(ac[:places+2], 50)
-    print_pi(correct_number[:places+2], 50)
+    if PLACES <= len(piref)-2:
+        print("{0}:".format("Extracted correct places"))
+        print_pi(correct_number[:places+2], 50)
     print("Used precision:", str(precision))
-    print("Used iteration:", str(iteration))
-    print("\nOutput of requested places:", str(places))
+    print("Predicted iteration:", str(iteration))
+    print("Used iteration:", str(i))
+    print("\nRequested places:", str(places))
     print("Matching places calculated:", str(correct_places))
     # End of function. Return 1.
     return 1
 
-# Execute script as module or as program.
+# Execute the script as module or as program.
 if __name__ == '__main__':
     # Remove whitespaces from herestring.
     PI = remove_whitespaces(PI_HEREDOC)
