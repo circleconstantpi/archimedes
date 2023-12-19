@@ -1,14 +1,36 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-'''Collection of cubic root algorithms.
+'''Collection of algorithm for the calculation of the cubic root.
 
-Implementation of various procedures for study purposes,
-namely Newton-Raphson, Bisection and Binary search.
+Following famous algorithms are implemented:
+
+Regula Falsi Method, Method of False Position, False Position Method
+Bisection Method
+Binary Search Method
+Newton's Method
+Newton–Raphson Method
+Halley's Method
+Householder's Method
+Steffensen Method**
+
+** works only for small values as expected
+
+Implementation of various procedures for study purposes.
+
+USAGE: (from shell prompt)
+    python3 ./cubic_root.py
+
+See also:
+www.math-cs.gordon.edu/courses/mat342/python/findroot.py
+cocalc.com/share/public_paths/embed/bf8c2613e8e9f04f4b052a83fb30a14e1ccea697
 '''
 # pylint: disable=invalid-name
 # pylint: disable=redefined-outer-name
 # pylint: disable=no-else-return
 # pylint: disable=chained-comparison
+# pylint: disable=invalid-unary-operand-type
+# pylint: disable=line-too-long
+# pylint: disable=eval-used
 
 __author__ = "Dr. Peter Netz"
 __copyright__ = "Copyright (C) 2023, Dr. Peter Netz"
@@ -21,10 +43,10 @@ from datetime import timedelta
 
 # Import the standard Python modules.
 from decimal import Decimal as D
-from decimal import getcontext, localcontext, ROUND_HALF_EVEN, ROUND_HALF_DOWN
+from decimal import getcontext, localcontext, InvalidOperation, ROUND_HALF_EVEN, ROUND_HALF_DOWN
 
 # Initialise the constant.
-PRECISION = 64
+PRECISION = 128
 
 # Set precision and rounding.
 getcontext().prec = PRECISION
@@ -44,16 +66,16 @@ def cubic_root_v0(a):
     eps = D(10)**(-prec)
     # Set and calculate the start values.
     x0 = a
-    xn = (2*x0 + a/D(x0*x0)) / 3
+    xn = (2*x0 + D(a)/D(x0*x0)) / 3
     # Change the local context.
     with localcontext() as ctx:
         # Change the local context behaviour.
         ctx.prec += 2
-        ctx.rounding=ROUND_HALF_DOWN
+        ctx.rounding = ROUND_HALF_DOWN
         # Iterate until convergence condition is reached.
         while abs(xn-x0) >= eps:
             x0 = xn
-            xn = (2*x0 + a/D(x0*x0)) / 3
+            xn = (2*x0 + D(a)/D(x0*x0)) / 3
     # Restore the precision.
     xn = +xn
     # Return the cubic root.
@@ -78,7 +100,7 @@ def cubic_root_v1(a):
     with localcontext() as ctx:
         # Change the local context behaviour.
         ctx.prec += 2
-        ctx.rounding=ROUND_HALF_DOWN
+        ctx.rounding = ROUND_HALF_DOWN
         # Iterate until convergence condition is reached.
         while abs(xn-x0) >= eps:
             x0 = xn
@@ -111,7 +133,7 @@ def cubic_root_v2(decnum):
     with localcontext() as ctx:
         # Change the local context behaviour.
         ctx.prec += 2
-        ctx.rounding=ROUND_HALF_DOWN
+        ctx.rounding = ROUND_HALF_DOWN
         # Run the iteration until the exit condition is reached.
         while abs(xn-x0) > eps:
             x0 = xn
@@ -146,7 +168,7 @@ def cubic_root_v3(num):
     with localcontext() as ctx:
         # Change the local context behaviour.
         ctx.prec += 2
-        ctx.rounding=ROUND_HALF_DOWN
+        ctx.rounding = ROUND_HALF_DOWN
         # Run an infinite loop.
         while True:
             # Calculate the value in the middle.
@@ -191,7 +213,7 @@ def cubic_root_v4(num):
     with localcontext() as ctx:
         # Change the local context.
         ctx.prec += 2
-        ctx.rounding=ROUND_HALF_EVEN
+        ctx.rounding = ROUND_HALF_EVEN
         # Run an infinite loop.
         while True:
             # Calculate the average value.
@@ -228,7 +250,7 @@ def cubic_root_v5(num):
     with localcontext() as ctx:
         # Change the local context.
         ctx.prec += 2
-        ctx.rounding=ROUND_HALF_DOWN
+        ctx.rounding = ROUND_HALF_DOWN
         # Define the range within the answer can be found.
         low = D(0)
         high = D(2) if num < 1 else D(2*num)
@@ -270,7 +292,7 @@ def cubic_root_v6(x):
     with localcontext() as ctx:
         # Change the local context.
         ctx.prec += 2
-        ctx.rounding=ROUND_HALF_DOWN
+        ctx.rounding = ROUND_HALF_DOWN
         # Run a loop until convergence is reached.
         while abs(w - y) >= eps:
             y = (p1*y + w) / p0
@@ -294,17 +316,15 @@ def cubic_root_v7(a):
     eps = D(10)**(-prec)
     # Set the start values.
     x0 = D(a)
-    #xn = D(x0) - D(x0**3-a)/D(3*x0**2)
     xn = D(x0) - D(x0*x0*x0-a)/D(3*x0*x0)
     # Change the local context.
     with localcontext() as ctx:
         # Change the local context.
         ctx.prec += 2
-        ctx.rounding=ROUND_HALF_DOWN
+        ctx.rounding = ROUND_HALF_DOWN
         # Run a loop until convergence is reached.
         while abs(x0 - xn) >= eps:
             x0 = xn
-            #xn = D(x0) - D(x0**3-a)/D(3*x0**2)
             xn = D(x0) - D(x0*x0*x0-a)/D(3*x0*x0)
     # Restore the precision.
     xn = +xn
@@ -330,7 +350,7 @@ def cubic_root_v8(a):
     with localcontext() as ctx:
         # Change the local context behaviour.
         ctx.prec += 2
-        ctx.rounding=ROUND_HALF_DOWN
+        ctx.rounding = ROUND_HALF_DOWN
         # Iterate until convergence condition is reached.
         while abs(xn-x0) >= eps:
             x0 = xn
@@ -339,6 +359,101 @@ def cubic_root_v8(a):
     xn = +xn
     # Return the cubic root.
     return xn
+
+# ----------------------------------------------------------------------
+# Function cubic_root_v9()
+# ----------------------------------------------------------------------
+def cubic_root_v9(num):
+    '''Applying Regula falsi to get the cubic root.'''
+    # Definition of governing equation.
+    def f(x, a):
+        return x*x*x - a
+    # Calculate the number of leading digits.
+    cln = len(str(num).split(".")[0])
+    # Get the used decimal precision.
+    c = getcontext()
+    prec = c.prec-cln
+    # Set the convergence criterion.
+    # eps: half of upper bound for relative error.
+    eps = D(10)**(-prec)
+    # Initialise the variable side.
+    side = 0
+    # a,b are endpoints of an interval where we are searching.
+    a = -2 * num
+    b = 2 * num
+    # Starting values at the endpoints of the interval.
+    fa = f(a, num)
+    fb = f(b, num)
+    # Perform a calculation in a new block using a local context.
+    with localcontext() as ctx:
+        # Change the local context.
+        ctx.prec += 2
+        ctx.rounding = ROUND_HALF_DOWN
+        # Run an infite loop.
+        while True:
+            c = (fa * b - fb * a) / (fa - fb)
+            if abs(b - a) < eps * abs(b + a):
+                break
+            fc = f(c, num)
+            if fc * fb > 0:
+                # fc and fb have the same sign, copy c to b.
+                b = c
+                fb = fc
+                if side == -1:
+                    fa /= 2
+                side = -1
+            elif fa * fc > 0:
+                # fc and fa have the same sign, copy c to a.
+                a = c
+                fa = fc
+                if side == +1:
+                    fb /= 2
+                side = +1
+            else:
+                # fc * fa, fb is very small (or looks like zero).
+                break
+    # Restore precision.
+    c = +c
+    # Return the cubic root.
+    return c
+
+# ----------------------------------------------------------------------
+# Function cubic_root_v10()
+# ----------------------------------------------------------------------
+def cubic_root_v10(a):
+    '''Steffensen method.'''
+    # Define the governing equation.
+    def f(x, a):
+        return x*x*x - a
+    # Calculate the number of leading digits.
+    cln = len(str(a).split(".")[0])
+    # Get the used decimal precision.
+    c = getcontext()
+    prec = c.prec-cln
+    # Set the convergence criterion.
+    eps = D(10)**(-prec)
+    p0 = D(1)/D(2)
+    # Run calculation in a block.
+    with localcontext() as ctx:
+        # Change the local context.
+        ctx.prec += 2
+        ctx.rounding=ROUND_HALF_DOWN
+        # Run an infinite loop.
+        while True:
+            # Try to calculate the cubic root.
+            try:
+                p1 = p0 + f(p0, a)
+                p2 = p1 + f(p1, a)
+                p = p2 - (p2 - p1)*(p2 - p1) / (p2 - 2*p1 + p0)
+                # Convergence criteria.
+                if abs(p-p0) < eps:
+                    break
+                # Store value for next loop.
+                p0 = p
+            except InvalidOperation:
+                break
+    p = +p
+    return p
 
 # Test values.
 a = D(3.46410161513775)
@@ -354,12 +469,15 @@ d = D(c)*D(c)*D(c)
 test_array = [d, 0.1, 0.3, 0.5, 0.8, 0.999999, 1, 2, 562345.983526627, 987299826534888736635.981425, '80996655413131.092562882']
 #test_array = [d]
 
+#method_array = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+method_array = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
 # Perform some tests.
 for i in test_array:
     print("Test value:", i)
-    for j in [0, 1, 2, 3, 4, 5, 6, 7]:
+    for j in method_array:
         msgstr = "cubic_root_v" + str(j) + "():"
-        print (msgstr)
+        print(msgstr)
         start = timer()
         prgstr = "cubic_root_v" + str(j) + "(D(" + str(i) + "))"
         cr = eval(prgstr)
@@ -367,7 +485,3 @@ for i in test_array:
         print(cr)
         print("Elapsed time:", timedelta(seconds=end-start))
     print()
-
-
-
-
