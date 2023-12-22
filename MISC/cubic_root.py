@@ -1,11 +1,15 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-'''Collection of algorithm for the calculation of the cubic root.
+'''Collection of algorithms for the calculation of the cubic root.
 
-Implementation of various procedures for study purposes. Objective is
-studying which one of the algorithms is fast and reliable. For a long
-term calculation where per iteration the cubic root is needed I need
-a fast one. The algorithm must still be robust.
+Description:
+Implementation of various procedures for the high precision calculation
+of cubic roots for study purposes.
+
+Objective:
+The objective is studying which one of the algorithms is fast and
+reliable. For a long term calculation where per iteration the cubic
+root is needed I need a fast one. The algorithm must still be robust.
 
 Following famous algorithms are implemented:
 
@@ -24,6 +28,11 @@ Following famous algorithms are implemented:
   Brute Force Method
 
 To-Do:
+
+Optimisation of the code. Finding and correcting typos. Improving of
+the documentation. Checking for errors. Calculate more examples.
+Optimisation of code. Find and coreect typos. Improvement of the
+documentation.
 
 Take a look on following methods/methodologys:
 
@@ -61,6 +70,8 @@ cocalc.com/share/public_paths/embed/bf8c2613e8e9f04f4b052a83fb30a14e1ccea697
 # pylint: disable=invalid-unary-operand-type
 # pylint: disable=line-too-long
 # pylint: disable=eval-used
+# pylint: disable=unused-import
+# pylint: disable=missing-function-docstring
 
 __author__ = "Dr. Peter Netz"
 __copyright__ = "Copyright (C) 2023, Dr. Peter Netz"
@@ -90,8 +101,8 @@ getcontext().rounding = ROUND_HALF_DOWN
 def approximation(a0, b0, num, prec):
     '''Calculate a approximation for the cubic root for a given radical.
 
-    Brute force method for finding the cubic root to number of requasted
-    places.
+    Brute force method for finding the cubic root to the number of
+    requested places.
 
     arguments:
         num (decimal) : radical of the searched root
@@ -101,54 +112,85 @@ def approximation(a0, b0, num, prec):
     Returns:
         a0, b0 (decimal) : lower and upper bound
     '''
+    # Get the lenght of the digits before the decimal point.
+    intlen = lambda c: len(str(c).split(".")[0])
     # Calculate and set the number of places.
-    a0len = len(str(a0).split(".")[0])
-    b0len = len(str(b0).split(".")[0])
-    intlen = int((a0len+b0len)/2)
-    digits = prec - intlen
+    a0_len, b0_len = intlen(a0), intlen(b0)
+    digits = prec - int(((a0_len + b0_len)/2))
     # Convert lower and upper bound to decimal.
     a0, b0 = D(a0), D(b0)
-    # Initialise the first digit.
+    # Initialise the initial digit.
     place = D(1)
     # Create place by place.
-    for _ in range(0, digits):
+    for _ in range(0, digits+1):
+        # Calculate the next decimal place.
         place /= 10
-        while a0*a0*a0 <= num:
+        # Add and subtract a new digit to a0 and b0.
+        while a0*a0*a0 < num:
             a0 += place
-        while b0*b0*b0 >= num:
+        while b0*b0*b0 > num:
             b0 -= place
-        # Decrement and increment both values.
+        # Decrement and increment a0 and b0 by the value of place.
         a0 -= place
         b0 += place
-    # Return lower and upper bound.
+    # Return the lower and the upper bound.
     return a0, b0
 
 # ----------------------------------------------------------------------
 # Function search_interval()
 # ----------------------------------------------------------------------
 def search_interval(c):
-    '''Calculate the search interval for the cubic root.'''
-    exp = len(str(c).split(".")[0])
-    min = 0
-    max = 10**exp
-    a0, b0 = int(min), int(max)
-    a1, b1 = 0, 0
-    def search_limits(c, a0, b0, step):
+    '''Calculate the search interval for the cubic root.
+
+    arguments:
+        c (decimal) : radical of the searched root
+
+    Returns:
+        a0, b0 (decimal) : lower and upper bound
+    '''
+    # Get the value of the exponent.
+    intlen = len(str(c).split(".")[0])
+    exp = round(((intlen-2)/3) + 1)
+    # Set initial values min and max for the interval.
+    minval = 0
+    maxval = 10**exp
+    # Initialise the return values.
+    a1, b1 = int(minval), int(maxval)
+    # Define a function.
+    def determine_limits(c, a0, b0, step):
+        '''Limit determination.'''
+        # Initialise the return values.
         a1, b1 = a0, b0
-        for i in range(a0, b0+1, step):
-            if i**3 < c:
+        # Check if i to the power of three is larger or smaller as c.
+        for i in range(a0, b0, step):
+            if i*i*i < c:
                 a1 = i
-            elif i**3 > c:
+            elif i*i*i > c:
                 b1 = i
                 break
+        # Return the limits of the interval.
         return a1, b1
-    if c > 1:
-        while max > 1:
-            max /= 10
-            a1, b1 = search_limits(c, a0, b0, int(max))
+    # Define a function.
+    def reverse_search(a0, b0, maxval):
+        '''Reverse search.'''
+        # Initialise the return values.
+        a1, b1 = a0, b0
+        # Run a reverse loop until we reach the potency value 10.
+        while maxval > 1:
+            # Assign max to the division by 10.
+            maxval /= 10
+            # The calculated max value is the new step width.
+            step = int(maxval)
+            # Calculate the values of the interval limits.
+            a1, b1 = determine_limits(c, a0, b0, step)
             a0, b0 = a1, b1
+        # Return the limits of the interval.
+        return a1, b1
+    # Return the limits based on the value of c.
+    if c > 1:
+        a1, b1 = reverse_search(a1, b1, maxval)
     elif c == 1:
-        a1, b1 = 0.5, 1.0
+        a1, b1 = 0.5, 1.5
     elif c < 1:
         a1, b1 = 0, 1
     return a1, b1
@@ -375,7 +417,7 @@ def cubic_root_v5(num):
 # Function cubic_root_v6()
 # ----------------------------------------------------------------------
 def cubic_root_v6(x):
-    '''Babylonian cubic root.'''
+    '''Babylonian Method for calculating the cubic root.'''
     # Calculate the number of leading digits.
     cln = len(str(x).split(".")[0])
     # Get the used decimal precision.
@@ -570,31 +612,30 @@ def cubic_root_v10(num):
 # ----------------------------------------------------------------------
 def cubic_root_v11(num):
     '''Brute force method.'''
-    # Get the used decimal precision.
+    # Get the used global decimal precision.
     c = getcontext()
     prec = c.prec
     # Calculate the search interval.
-    lb, ub = search_interval(num)
-    # Change the local context.
+    a0, b0 = search_interval(num)
+    # Run a calculation block.
     with localcontext() as ctx:
-        # Change the local context behaviour.
+        # Change the local context.
         ctx.prec += 2
         ctx.rounding = ROUND_HALF_DOWN
-        # Calculate the best approximation for lower and upper bound.
-        lb, ub = approximation(lb, ub, num, prec)
-        # Calculate the mean value of lower and upper bound.
-        cr = D(ub + lb) / 2
+        # Calculate the best approximation for lower and upper limit.
+        a0, b0 = approximation(a0, b0, num, prec)
+        # Calculate the mean value of lower and upper limit.
+        cbrt = D(a0 + b0) / 2
     # Restore the precision.
-    cr = +cr
+    cbrt = +cbrt
     # Return the cubic root.
-    return cr
+    return cbrt
 
 # ----------------------------------------------------------------------
 # Function cubic_root_v12()
 # ----------------------------------------------------------------------
 def cubic_root_v12(dec):
-    '''Steffenson algorithm for finding cubic roots.
-    '''
+    '''Steffensen Method for finding cubic roots.'''
     # Define the governing function.
     def f(x, dec):
         fx = x*x*x - dec
@@ -623,14 +664,16 @@ def cubic_root_v12(dec):
                 x1 = x0 - f(x0, dec) / g(x0, dec)
             except InvalidOperation:
                 pass
+    # Restore the precision.
     x1 = +x1
+    # Rteurn the cubic root.
     return x1
 
 # ----------------------------------------------------------------------
 # Function cubic_root_v13()
 # ----------------------------------------------------------------------
 def cubic_root_v13(a):
-    '''Steffensen method.'''
+    '''Steffensen-Aitken Method for finding cubic roots.'''
     # Define the governing equation.
     def f(x, a):
         return x*x*x - a
@@ -676,10 +719,14 @@ c = D(a + b) / D(2)
 d = D(c)*D(c)*D(c)
 
 # Set up a test array.
-test_array = [d, 0.1, 0.3, 0.5, 0.8, 0.999999, 1, 2, 7856432, 562345.983526627, 987299826534888736635.981425, '80996655413131.092562882']
+test_array = [d, 0.1, 0.3, 0.5, 0.8, 0.999999, 1, 2, 7856432, 562345.983526627,
+              987299826534888736635.981425, 99999999, '80996655413131.092562882',
+              624262829789793071275019512095723496525655125151635435275759776234274,
+              999999999999999999999999999999999999999999999999999999999999999999999,
+              0.00000000000000000000000000001, 0.2345378907890453453456]
 
 # Set the methods to use.
-method_array = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12]
+method_array = [0, 1, 2, 3, 4, 5, 6, 7, 8, 11]
 
 # Perform some tests.
 for i in test_array:
